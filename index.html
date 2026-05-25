@@ -3,9 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MILENIUM STORE - Catálogo</title>
+    <title>MILENIUM STORE - Catálogo Premium</title>
     <style>
-        /* Estética Gaming Premium (Dota 2 Reborn Style) */
+        /* ================= VARIABLES DE COLOR ================= */
+        :root {
+            --bg-main: #0a0909;
+            --bg-card: #161413;
+            --primary: #ff4500;
+            --primary-glow: rgba(255, 69, 0, 0.4);
+            --secondary: #e5a823;
+            --secondary-glow: rgba(229, 168, 35, 0.3);
+            --text-light: #f0f0f0;
+            --text-muted: #a0a0a0;
+            --border-color: #302a28;
+            --success: #28a745;
+        }
+
+        /* ================= RESET Y BASE ================= */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,283 +28,352 @@
         }
 
         body {
-            background-color: #0f0e0e;
-            color: #f0f0f0;
-            padding: 15px;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            padding: 0 15px;
             min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #1f1b1a 0%, transparent 50%);
         }
 
-        /* Encabezado con Logo al lado del Texto */
+        /* ================= ENCABEZADO (MÁS PROTAGONISMO) ================= */
         header {
             display: flex;
+            flex-direction: column; /* Apilado en móvil */
             align-items: center;
             justify-content: center;
-            gap: 15px;
-            padding: 20px 10px;
-            background: linear-gradient(180deg, rgba(26,24,23,0.9) 0%, rgba(15,14,14,0) 100%);
-            border-bottom: 3px solid #ff4500;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(255, 69, 0, 0.15);
+            gap: 20px;
+            padding: 40px 20px;
+            background: linear-gradient(180deg, rgba(26,24,23,0.95) 0%, rgba(10,9,9,0) 100%);
+            border-bottom: 2px solid var(--primary);
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px var(--primary-glow);
+            text-align: center;
         }
 
+        /* Logo ampliado y con efecto glow */
         .header-logo {
-            width: 50px;
-            height: 50px;
+            width: 100px;
+            height: 100px;
             object-fit: contain;
-            border-radius: 6px;
-            border: 1px solid #e5a823;
+            border-radius: 12px;
+            border: 2px solid var(--secondary);
+            box-shadow: 0 0 20px var(--secondary-glow);
+            background-color: #000;
+            transition: transform 0.3s ease;
         }
 
-        .header-text {
-            text-align: left;
+        .header-logo:hover {
+            transform: scale(1.05);
         }
 
-        header h1 {
-            font-size: 22px;
+        .header-text h1 {
+            font-size: 28px;
             color: #ffffff;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(255,69,0,0.5), 2px 2px 4px #000;
-            line-height: 1.2;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px var(--primary-glow), 2px 2px 4px #000;
+            margin-bottom: 5px;
         }
 
-        header p {
-            font-size: 12px;
-            color: #a0a0a0;
+        .header-text p {
+            font-size: 14px;
+            color: var(--secondary);
             font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .section-title {
-            font-size: 19px;
-            color: #e5a823;
-            text-transform: uppercase;
-            margin: 30px 0 15px 0;
-            padding-left: 10px;
-            border-left: 5px solid #ff4500;
             letter-spacing: 1px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+            text-transform: uppercase;
         }
 
+        /* ================= TÍTULOS DE SECCIÓN ================= */
+        .section-title {
+            font-size: 22px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            margin: 40px 0 20px 0;
+            padding-left: 15px;
+            border-left: 6px solid var(--primary);
+            letter-spacing: 1.5px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+            font-weight: 800;
+        }
+
+        /* ================= GRID RESPONSIVE (LA MAGIA) ================= */
         .grid-productos {
+            display: grid;
+            /* Se ajusta automáticamente: mínimo 280px por tarjeta, llenando el espacio disponible */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding-bottom: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ================= TARJETAS ================= */
+        .card {
+            background: linear-gradient(135deg, #231f1e 0%, var(--bg-card) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             flex-direction: column;
-            gap: 20px;
         }
 
-        /* Tarjeta de Producto */
-        .card {
-            background: linear-gradient(135deg, #231f1e 0%, #161413 100%);
-            border: 1px solid #443833;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        /* Efecto Hover en las tarjetas */
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(255, 69, 0, 0.1);
+            border-color: #5a4b45;
         }
 
         .card.skin-raro {
-            border: 1px solid rgba(229, 168, 35, 0.4);
-            box-shadow: 0 0 12px rgba(229, 168, 35, 0.15), 0 8px 16px rgba(0,0,0,0.6);
+            border: 1px solid rgba(229, 168, 35, 0.5);
+            box-shadow: 0 0 15px var(--secondary-glow), 0 8px 16px rgba(0,0,0,0.6);
         }
 
-        /* Contenedor optimizado para ver la imagen COMPLETA sin ajustar */
+        .card.skin-raro:hover {
+            box-shadow: 0 0 25px rgba(229, 168, 35, 0.4), 0 15px 30px rgba(0,0,0,0.8);
+        }
+
+        /* Contenedor de Imagen */
         .card-img-container {
             width: 100%;
-            height: 210px;
-            background-color: #0b0a0a; /* Fondo oscuro neutro para los bordes vacíos */
+            height: 220px;
+            background-color: #050505; 
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            border-bottom: 1px solid #231f1e;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Muestra la imagen completa sin recortar nada */
+            object-fit: contain; 
+            transition: transform 0.5s ease;
         }
 
+        .card:hover img {
+            transform: scale(1.08); /* Ligero zoom al pasar el ratón */
+        }
+
+        /* Etiqueta / Badge */
         .badge {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, var(--success) 0%, #1e7e34 100%);
             color: white;
-            padding: 4px 10px;
+            padding: 5px 12px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 800;
             border-radius: 20px;
             text-transform: uppercase;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             border: 1px solid #34ce57;
             z-index: 2;
+            letter-spacing: 0.5px;
         }
 
+        /* Cuerpo de la Tarjeta */
         .card-body {
-            padding: 15px;
-            background: rgba(20, 18, 17, 0.6);
+            padding: 20px;
+            background: rgba(20, 18, 17, 0.8);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Para que los botones se alineen al fondo si las tarjetas tienen diferente altura */
         }
 
         .card-title {
-            font-size: 17px;
+            font-size: 18px;
             color: #ffffff;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             font-weight: 700;
             line-height: 1.3;
         }
 
         .card-meta {
-            font-size: 12px;
-            color: #b5b5b5;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            flex-grow: 1;
         }
 
         .card-precio {
-            font-size: 20px;
-            color: #e5a823;
-            font-weight: 800;
-            margin-bottom: 15px;
+            font-size: 22px;
+            color: var(--secondary);
+            font-weight: 900;
+            margin-bottom: 20px;
             display: block;
-            text-shadow: 0 0 8px rgba(229,168,35,0.2);
+            text-shadow: 0 0 10px var(--secondary-glow);
         }
 
+        /* Botón de Compra */
         .btn-comprar {
             display: block;
             width: 100%;
             background: linear-gradient(180deg, #ca3422 0%, #8a170c 100%);
             color: white;
             text-align: center;
-            padding: 12px;
-            border: 1px solid #ff4500;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 14px;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             text-decoration: none;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-comprar:hover {
+            background: linear-gradient(180deg, #e33b26 0%, #a41b0e 100%);
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: translateY(-2px);
         }
 
         .btn-comprar:active {
-            background: linear-gradient(180deg, #a42214 0%, #610d06 100%);
+            transform: translateY(1px);
         }
 
+        /* Footer */
         footer {
             text-align: center;
-            padding: 30px 10px;
-            font-size: 11px;
-            color: #555;
-            border-top: 1px solid #231f1e;
-            margin-top: 40px;
+            padding: 40px 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ================= MEDIA QUERIES (PARA PC/TABLET) ================= */
+        @media (min-width: 768px) {
+            header {
+                flex-direction: row;
+                text-align: left;
+                padding: 30px 40px;
+            }
+            .header-logo {
+                width: 120px;
+                height: 120px;
+            }
+            .header-text h1 {
+                font-size: 34px;
+            }
+            .header-text p {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="logo.jpg" alt="Logo" class="header-logo">
+        <img src="logo.jpg" alt="Logo Milenium Store" class="header-logo">
         <div class="header-text">
             <h1>MILENIUM STORE</h1>
             <p>⚡ Catálogo de Entrega Inmediata</p>
         </div>
     </header>
 
-    <!-- ================= SECCIÓN SKINS ================= -->
-    <div class="section-title">Skins & Arcanas</div>
-    <div class="grid-productos">
-        
-        <!-- Skin 1 -->
-        <div class="card skin-raro">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="img1.jpg" alt="Primal Beast">
+    <div style="max-width: 1400px; margin: 0 auto;">
+        <div class="section-title">Skins & Arcanas</div>
+        <div class="grid-productos">
+            
+            <div class="card skin-raro">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="img1.jpg" alt="Primal Beast">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Primal Beast - Age of Attrition</div>
+                    <div class="card-meta">Héroe: Primal Beast<br>Calidad: Set de Colección</div>
+                    <div class="card-precio">$14.00 USD <span style="font-size: 14px; font-weight: normal; color: #a0a0a0;">/ Equiv. CUP</span></div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Primal Beast...')">Pedir por WhatsApp</a>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="card-title">Primal Beast - Age of Attrition</div>
-                <div class="card-meta">Héroe: Primal Beast<br>Calidad: Set de Colección</div>
-                <div class="card-precio">$14.00 USD / Equiv. CUP</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Primal Beast...')">Pedir por WhatsApp</a>
+
+            <div class="card skin-raro">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="img2.jpg" alt="Sniper">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Sniper - Silver Fox</div>
+                    <div class="card-meta">Héroe: Sniper<br>Calidad: Aspecto Mítico</div>
+                    <div class="card-precio">$6.50 USD <span style="font-size: 14px; font-weight: normal; color: #a0a0a0;">/ Equiv. CUP</span></div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Sniper...')">Pedir por WhatsApp</a>
+                </div>
             </div>
+
+            <div class="card skin-raro">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="img3.jpg" alt="Terrorblade">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Arcana - Fractal Horns of Inner Abysm</div>
+                    <div class="card-meta">Héroe: Terrorblade<br>Calidad: Aspecto Exaltado</div>
+                    <div class="card-precio">$24.00 USD <span style="font-size: 14px; font-weight: normal; color: #a0a0a0;">/ Equiv. CUP</span></div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Arcana de Terrorblade...')">Pedir por WhatsApp</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="img4.jpg" alt="Snapfire">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Snapfire - Desert Scourge</div>
+                    <div class="card-meta">Héroe: Snapfire<br>Efectos de montura modificados</div>
+                    <div class="card-precio">$9.00 USD <span style="font-size: 14px; font-weight: normal; color: #a0a0a0;">/ Equiv. CUP</span></div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Snapfire...')">Pedir por WhatsApp</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="img5.jpg" alt="Spectre">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Spectre - Soul Diffuser</div>
+                    <div class="card-meta">Héroe: Spectre<br>Calidad: Inmortal (Arma)</div>
+                    <div class="card-precio">$11.50 USD <span style="font-size: 14px; font-weight: normal; color: #a0a0a0;">/ Equiv. CUP</span></div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Inmortal de Spectre...')">Pedir por WhatsApp</a>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Skin 2 -->
-        <div class="card skin-raro">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="img2.jpg" alt="Sniper">
+        <div class="section-title">Cuentas de Steam</div>
+        <div class="grid-productos">
+            
+            <div class="card">
+                <div class="card-img-container">
+                    <span class="badge">Disponible</span>
+                    <img src="cuenta1.jpg" alt="Cuenta 1">
+                </div>
+                <div class="card-body">
+                    <div class="card-title">Cuenta MMR 3800 (Rango Divino)</div>
+                    <div class="card-meta">Comportamiento: 10,000 (Excelente)<br>Lv. Steam: 15 | Incluye correo original</div>
+                    <div class="card-precio">$35.00 USD</div>
+                    <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para consultar la Cuenta de 3800 MMR...')">Consultar Cuenta</a>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="card-title">Sniper - Silver Fox</div>
-                <div class="card-meta">Héroe: Sniper<br>Calidad: Aspecto Mítico</div>
-                <div class="card-precio">$6.50 USD / Equiv. CUP</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Sniper...')">Pedir por WhatsApp</a>
-            </div>
+
         </div>
-
-        <!-- Skin 3 -->
-        <div class="card skin-raro">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="img3.jpg" alt="Terrorblade">
-            </div>
-            <div class="card-body">
-                <div class="card-title">Arcana - Fractal Horns of Inner Abysm</div>
-                <div class="card-meta">Héroe: Terrorblade<br>Calidad: Aspecto Exaltado</div>
-                <div class="card-precio">$24.00 USD / Equiv. CUP</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Arcana de Terrorblade...')">Pedir por WhatsApp</a>
-            </div>
-        </div>
-
-        <!-- Skin 4 -->
-        <div class="card">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="img4.jpg" alt="Snapfire">
-            </div>
-            <div class="card-body">
-                <div class="card-title">Snapfire - Desert Scourge</div>
-                <div class="card-meta">Héroe: Snapfire<br>Efectos de montura modificados</div>
-                <div class="card-precio">$9.00 USD / Equiv. CUP</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Set de Snapfire...')">Pedir por WhatsApp</a>
-            </div>
-        </div>
-
-        <!-- Skin 5 -->
-        <div class="card">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="img5.jpg" alt="Spectre">
-            </div>
-            <div class="card-body">
-                <div class="card-title">Spectre - Soul Diffuser</div>
-                <div class="card-meta">Héroe: Spectre<br>Calidad: Inmortal (Arma)</div>
-                <div class="card-precio">$11.50 USD / Equiv. CUP</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para pedir Inmortal de Spectre...')">Pedir por WhatsApp</a>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- ================= SECCIÓN CUENTAS ================= -->
-    <div class="section-title">Cuentas de Steam</div>
-    <div class="grid-productos">
-        
-        <!-- Cuenta 1 -->
-        <div class="card">
-            <div class="card-img-container">
-                <span class="badge">Disponible</span>
-                <img src="cuenta1.jpg" alt="Cuenta 1">
-            </div>
-            <div class="card-body">
-                <div class="card-title">Cuenta MMR 3800 (Rango Divino)</div>
-                <div class="card-meta">Comportamiento: 10,000 (Excelente)<br>Lv. Steam: 15 | Incluye correo original de creación</div>
-                <div class="card-precio">$35.00 USD</div>
-                <a href="#" class="btn-comprar" onclick="alert('Abriendo WhatsApp para consultar la Cuenta de 3800 MMR...')">Consultar Cuenta</a>
-            </div>
-        </div>
-
     </div>
 
     <footer>
