@@ -24,7 +24,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-light); min-height: 100vh; }
 
-        /* LOGIN */
         .login-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, #0a0909 0%, #1a1512 100%);
@@ -77,8 +76,6 @@
             flex-wrap: wrap;
         }
         .status-bar strong { color: var(--secondary); }
-        .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
         .tab-btn {
@@ -147,57 +144,9 @@
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
         .btn-secondary { background: var(--bg-input); color: var(--text-light); border: 1px solid var(--border-color); }
         .btn-secondary:hover { border-color: var(--secondary); color: var(--secondary); }
-        .btn-danger { background: linear-gradient(180deg, #c0392b 0%, #922b21 100%); color: white; border: 1px solid #e74c3c; }
-        .btn-danger:hover { box-shadow: 0 0 15px rgba(220, 53, 69, 0.3); }
-        .btn-success { background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%); color: white; border: 1px solid #2ecc71; }
 
-        .section-title {
-            font-size: 16px; color: var(--secondary); text-transform: uppercase;
-            margin: 0 0 16px 0; padding-left: 10px;
-            border-left: 4px solid var(--primary); letter-spacing: 1.5px; font-weight: 800;
-        }
-        .products-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-        @media (min-width: 640px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
-
-        .product-card {
-            background: linear-gradient(145deg, #1e1a19 0%, var(--bg-card) 100%);
-            border: 1px solid var(--border-color); border-radius: 12px;
-            overflow: hidden; transition: all 0.3s; position: relative;
-        }
-        .product-card:hover { border-color: #4a3f3a; transform: translateY(-3px); }
-        .product-img {
-            width: 100%; height: 150px; object-fit: contain;
-            background: linear-gradient(180deg, #0c0b0b 0%, #151312 100%);
-            border-bottom: 1px solid var(--border-color); padding: 8px;
-        }
-        .product-info { padding: 14px; }
-        .product-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-        .product-meta { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
-        .product-price { font-size: 16px; color: var(--secondary); font-weight: 900; margin-bottom: 10px; }
-        .product-actions { display: flex; gap: 6px; }
-        .product-actions .btn { padding: 8px 14px; font-size: 11px; flex: 1; }
-
-        .rareza-badge {
-            position: absolute; top: 8px; right: 8px;
-            padding: 3px 8px; border-radius: 20px;
-            font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-        .rareza-comun { background: #b0c3d9; color: #1a1a1a; }
-        .rareza-poco-comun { background: #5e98d9; color: #fff; }
-        .rareza-raro { background: #4b69ff; color: #fff; }
-        .rareza-mitico { background: #8847ff; color: #fff; }
-        .rareza-legendario { background: #d32ce6; color: #fff; }
-        .rareza-ancestral { background: #eb4b4b; color: #fff; }
-        .rareza-inmortal { background: #e4ae33; color: #1a1a1a; }
-        .rareza-arcano { background: #ade55c; color: #1a1a1a; }
-
-        .spinner {
-            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white; border-radius: 50%;
-            animation: spin 0.8s linear infinite; display: inline-block;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .progress-container { width: 100%; height: 4px; background: var(--bg-input); border-radius: 2px; margin-top: 8px; display: none; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; width: 0%; transition: width 0.3s; }
 
         .toast {
             position: fixed; bottom: 20px; right: 20px;
@@ -210,18 +159,17 @@
         }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.error { background: var(--danger); }
-        .toast.warning { background: var(--warning); color: #1a1a1a; }
         .toast.info { background: var(--info); }
 
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; }
-        .sync-info {
+        .issue-info {
             background: rgba(23, 162, 184, 0.1); border: 1px solid var(--info);
             border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
             font-size: 12px; color: var(--text-muted); line-height: 1.6;
         }
-        .sync-info code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: monospace; font-size: 11px; }
-        .progress-container { width: 100%; height: 4px; background: var(--bg-input); border-radius: 2px; margin-top: 8px; display: none; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; width: 0%; transition: width 0.3s; }
+        .issue-info code {
+            background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;
+            color: var(--primary); font-family: monospace; font-size: 11px;
+        }
     </style>
 <base target="_blank">
 </head>
@@ -245,17 +193,21 @@
         </div>
         <div class="container">
             <div class="status-bar">
-                <div class="status-indicator"></div>
                 <div>
                     <strong>Cloudinary:</strong> <span id="cloudStatus">Conectado</span> |
-                    <strong>GitHub:</strong> <span id="githubStatus">Conectado</span> |
-                    <strong>Productos:</strong> <span id="totalProducts">0</span>
+                    <strong>GitHub:</strong> <span id="githubStatus">Usando Issues</span>
                 </div>
             </div>
 
-            <div class="sync-info">
-                <strong>Sincronizacion automatica:</strong> Los datos se guardan en <code>productos.json</code> en tu repo de GitHub. 
-                Las imagenes se suben a Cloudinary y se sirven via CDN.
+            <div class="issue-info">
+                <strong>Como funciona:</strong> Los productos se agregan creando un <code>Issue</code> en tu repo de GitHub. 
+                Un <code>GitHub Action</code> automaticamente procesa el Issue y actualiza <code>productos.json</code>. 
+                <br><br>
+                <strong>Pasos:</strong><br>
+                1. Llena el formulario y sube la imagen a Cloudinary<br>
+                2. Click en "Crear Issue" → esto abrira GitHub con los datos prellenados<br>
+                3. Click en "Submit new issue" en GitHub<br>
+                4. En ~30 segundos el producto aparecera en el catalogo
             </div>
 
             <!-- TABS -->
@@ -264,7 +216,6 @@
                 <button class="tab-btn" onclick="switchTab('cuentas', this)">Cuentas Steam</button>
                 <button class="tab-btn" onclick="switchTab('mensajeros', this)">Mensajeros</button>
                 <button class="tab-btn" onclick="switchTab('otros', this)">Otros</button>
-                <button class="tab-btn" onclick="switchTab('listado', this)">Ver Todo</button>
             </div>
 
             <!-- FORM HEROES -->
@@ -314,9 +265,14 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary" id="hero-btn" onclick="publishHero()">
-                                <span id="hero-btn-text">Publicar Skin</span>
+                                <span id="hero-btn-text">1. Subir Imagen a Cloudinary</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('hero')">Limpiar</button>
+                        </div>
+                        <div class="btn-group" id="hero-step2" style="display:none; margin-top:10px;">
+                            <button type="button" class="btn btn-success" onclick="createHeroIssue()">
+                                2. Crear Issue en GitHub
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -378,9 +334,14 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary" id="cuenta-btn" onclick="publishCuenta()">
-                                <span id="cuenta-btn-text">Publicar Cuenta</span>
+                                <span id="cuenta-btn-text">1. Subir Imagen a Cloudinary</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('cuenta')">Limpiar</button>
+                        </div>
+                        <div class="btn-group" id="cuenta-step2" style="display:none; margin-top:10px;">
+                            <button type="button" class="btn btn-success" onclick="createCuentaIssue()">
+                                2. Crear Issue en GitHub
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -427,9 +388,14 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary" id="mensajero-btn" onclick="publishMensajero()">
-                                <span id="mensajero-btn-text">Publicar Mensajero</span>
+                                <span id="mensajero-btn-text">1. Subir Imagen a Cloudinary</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('mensajero')">Limpiar</button>
+                        </div>
+                        <div class="btn-group" id="mensajero-step2" style="display:none; margin-top:10px;">
+                            <button type="button" class="btn btn-success" onclick="createMensajeroIssue()">
+                                2. Crear Issue en GitHub
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -473,45 +439,33 @@
                         </div>
                         <div class="btn-group">
                             <button type="button" class="btn btn-primary" id="otro-btn" onclick="publishOtro()">
-                                <span id="otro-btn-text">Publicar Producto</span>
+                                <span id="otro-btn-text">1. Subir Imagen a Cloudinary</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('otro')">Limpiar</button>
                         </div>
+                        <div class="btn-group" id="otro-step2" style="display:none; margin-top:10px;">
+                            <button type="button" class="btn btn-success" onclick="createOtroIssue()">
+                                2. Crear Issue en GitHub
+                            </button>
+                        </div>
                     </form>
                 </div>
-            </div>
-
-            <!-- LISTADO GENERAL -->
-            <div id="tab-listado" class="tab-content" style="display:none;">
-                <div class="section-title">Skins de Heroes (<span id="count-heroes">0</span>)</div>
-                <div class="products-grid" id="list-heroes"></div>
-
-                <div class="section-title">Cuentas Steam (<span id="count-cuentas">0</span>)</div>
-                <div class="products-grid" id="list-cuentas"></div>
-
-                <div class="section-title">Mensajeros (<span id="count-mensajeros">0</span>)</div>
-                <div class="products-grid" id="list-mensajeros"></div>
-
-                <div class="section-title">Otros Productos (<span id="count-otros">0</span>)</div>
-                <div class="products-grid" id="list-otros"></div>
             </div>
         </div>
     </div>
 
     <div class="toast" id="toast"></div>
 
-    <!-- CONFIG EXTERNO -->
     <script>
-const GITHUB_TOKEN = "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";
-const REPO_OWNER = "DarkWorld03";
-const REPO_NAME = "milenium-store";
-const CLOUDINARY_CLOUD_NAME = "dtjb4m3ij";
-const CLOUDINARY_UPLOAD_PRESET = "milenium_preset";
-const GITHUB_API_URL = "https://api.github.com/repos/" + REPO_OWNER + "/" + REPO_NAME + "/contents/productos.json";
-const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload";
-</script>
+        // ============================================================
+        // CONFIGURACION - SOLO CLOUDINARY (NO GITHUB TOKEN)
+        // ============================================================
+        const REPO_OWNER = "DarkWorld03";
+        const REPO_NAME = "milenium-store";
+        const CLOUDINARY_CLOUD_NAME = "dtjb4m3ij";
+        const CLOUDINARY_UPLOAD_PRESET = "milenium_preset";
+        const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload";
 
-    <script>
         // ============================================================
         // HEROES DOTA 2
         // ============================================================
@@ -544,8 +498,7 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
             "Zeus"
         ];
 
-        let products = [];
-        let githubSha = null;
+        let currentImageUrl = '';
 
         // ============================================================
         // LOGIN
@@ -577,7 +530,6 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
                 opt.textContent = hero;
                 heroSelect.appendChild(opt);
             });
-            syncFromGitHub();
         }
 
         // ============================================================
@@ -595,9 +547,9 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
             const btnText = document.getElementById(prefix + '-btn-text');
             btn.disabled = isLoading;
             if (isLoading) {
-                btnText.innerHTML = '<span class="spinner"></span> Procesando...';
+                btnText.innerHTML = '<span style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:6px;"></span> Subiendo...';
             } else {
-                btnText.innerText = 'Publicar ' + (prefix === 'hero' ? 'Skin' : prefix === 'cuenta' ? 'Cuenta' : prefix === 'mensajero' ? 'Mensajero' : 'Producto');
+                btnText.innerText = '1. Subir Imagen a Cloudinary';
             }
         }
 
@@ -627,6 +579,8 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
             document.getElementById(prefix + 'Form').reset();
             document.getElementById(prefix + '-preview').classList.remove('visible');
             document.getElementById(prefix + '-preview').src = '';
+            document.getElementById(prefix + '-step2').style.display = 'none';
+            currentImageUrl = '';
         }
 
         function switchTab(tab, btn) {
@@ -634,16 +588,6 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
             btn.classList.add('active');
             document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
             document.getElementById('tab-' + tab).style.display = 'block';
-            if (tab === 'listado') renderListado();
-        }
-
-        function getRarezaClass(rareza) {
-            const map = {
-                'Comun': 'rareza-comun', 'Poco Comun': 'rareza-poco-comun', 'Raro': 'rareza-raro',
-                'Mitico': 'rareza-mitico', 'Legendario': 'rareza-legendario',
-                'Ancestral': 'rareza-ancestral', 'Inmortal': 'rareza-inmortal', 'Arcano': 'rareza-arcano'
-            };
-            return map[rareza] || 'rareza-comun';
         }
 
         // ============================================================
@@ -674,88 +618,22 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
         }
 
         // ============================================================
-        // GITHUB API
-        // ============================================================
-        async function fetchProductsFromGitHub() {
-            try {
-                const response = await fetch(GITHUB_API_URL, {
-                    method: 'GET',
-                    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
-                });
-                if (response.status === 404) { githubSha = null; return []; }
-                if (!response.ok) throw new Error('GitHub GET ' + response.status + ': ' + response.statusText);
-                const data = await response.json();
-                githubSha = data.sha;
-                const content = atob(data.content);
-                const jsonData = JSON.parse(content);
-                return Array.isArray(jsonData) ? jsonData : [];
-            } catch (error) {
-                throw new Error('Error leyendo GitHub: ' + error.message);
-            }
-        }
-
-        async function saveProductsToGitHub(productsArray, commitMessage) {
-            try {
-                const contentStr = JSON.stringify(productsArray, null, 2);
-                const contentBase64 = btoa(unescape(encodeURIComponent(contentStr)));
-                const body = { message: commitMessage || 'Update from Milenium Store admin', content: contentBase64, branch: 'main' };
-                if (githubSha) body.sha = githubSha;
-
-                const response = await fetch(GITHUB_API_URL, {
-                    method: 'PUT',
-                    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    if (response.status === 409 || response.status === 422) {
-                        throw new Error('Conflicto de version. Recarga la pagina.');
-                    }
-                    throw new Error('GitHub PUT: ' + (errorData.message || response.statusText));
-                }
-                const data = await response.json();
-                if (data.content && data.content.sha) githubSha = data.content.sha;
-                return true;
-            } catch (error) {
-                throw new Error('Error guardando en GitHub: ' + error.message);
-            }
-        }
-
-        // ============================================================
-        // PUBLICAR HEROE
+        // PUBLICAR HEROE (PASO 1: Subir imagen)
         // ============================================================
         async function publishHero() {
-            const nombre = document.getElementById('hero-nombre').value.trim();
-            const heroe = document.getElementById('hero-heroe').value;
-            const rareza = document.getElementById('hero-rareza').value;
-            const precio = parseFloat(document.getElementById('hero-precio').value);
-            const descripcion = document.getElementById('hero-descripcion').value.trim();
             const imagenFile = document.getElementById('hero-imagen').files[0];
 
-            if (!nombre || !heroe || !rareza || !precio || !imagenFile) {
-                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            if (!imagenFile) {
+                showToast('Selecciona una imagen primero', 'error'); return;
             }
 
             setLoading('hero', true);
             try {
-                showToast('Subiendo imagen...', 'info');
+                showToast('Subiendo imagen a Cloudinary...', 'info');
                 const cloudData = await uploadToCloudinary(imagenFile, 'hero');
-                showToast('Imagen subida!', 'success');
-
-                const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'hero_' + Date.now(), tipo: 'heroe', nombre: nombre, heroe: heroe,
-                    rareza: rareza, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado skin: ' + nombre + ' (' + heroe + ')');
-
-                products = current;
-                updateCounts();
-                showToast('Skin "' + nombre + '" publicada!', 'success');
-                resetForm('hero');
+                currentImageUrl = cloudData.secure_url;
+                showToast('Imagen subida! Ahora crea el Issue en GitHub', 'success');
+                document.getElementById('hero-step2').style.display = 'flex';
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
@@ -764,43 +642,50 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
         }
 
         // ============================================================
-        // PUBLICAR CUENTA
+        // CREAR ISSUE HEROE (PASO 2)
+        // ============================================================
+        function createHeroIssue() {
+            const nombre = document.getElementById('hero-nombre').value.trim();
+            const heroe = document.getElementById('hero-heroe').value;
+            const rareza = document.getElementById('hero-rareza').value;
+            const precio = document.getElementById('hero-precio').value;
+            const descripcion = document.getElementById('hero-descripcion').value.trim();
+
+            if (!nombre || !heroe || !rareza || !precio) {
+                showToast('Completa todos los campos obligatorios', 'error'); return;
+            }
+            if (!currentImageUrl) {
+                showToast('Primero sube la imagen (Paso 1)', 'error'); return;
+            }
+
+            const issueBody = 'tipo: heroe\n' +
+                'nombre: ' + nombre + '\n' +
+                'heroe: ' + heroe + '\n' +
+                'rareza: ' + rareza + '\n' +
+                'precio: ' + precio + '\n' +
+                'imagen_url: ' + currentImageUrl + '\n' +
+                'descripcion: ' + descripcion;
+
+            const issueTitle = 'Nuevo producto: ' + nombre + ' (' + heroe + ')';
+            const url = 'https://github.com/' + REPO_OWNER + '/' + REPO_NAME + '/issues/new?title=' + encodeURIComponent(issueTitle) + '&body=' + encodeURIComponent(issueBody);
+
+            window.open(url, '_blank');
+            showToast('Issue abierto en GitHub. Completa el Issue y el producto se agregara automaticamente.', 'info');
+        }
+
+        // ============================================================
+        // PUBLICAR CUENTA (PASO 1)
         // ============================================================
         async function publishCuenta() {
-            const mmr = parseInt(document.getElementById('cuenta-mmr').value);
-            const rango = document.getElementById('cuenta-rango').value;
-            const comportamiento = parseInt(document.getElementById('cuenta-comportamiento').value) || 10000;
-            const steamLevel = parseInt(document.getElementById('cuenta-steam-level').value) || 0;
-            const correo = document.getElementById('cuenta-correo').value === 'true';
-            const precio = parseFloat(document.getElementById('cuenta-precio').value);
-            const descripcion = document.getElementById('cuenta-descripcion').value.trim();
             const imagenFile = document.getElementById('cuenta-imagen').files[0];
-
-            if (!mmr || !rango || !precio || !imagenFile) {
-                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
-            }
+            if (!imagenFile) { showToast('Selecciona una imagen primero', 'error'); return; }
 
             setLoading('cuenta', true);
             try {
-                showToast('Subiendo imagen...', 'info');
                 const cloudData = await uploadToCloudinary(imagenFile, 'cuenta');
-                showToast('Imagen subida!', 'success');
-
-                const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'cuenta_' + Date.now(), tipo: 'cuenta', mmr: mmr, rango: rango,
-                    comportamiento: comportamiento, steam_level: steamLevel,
-                    correo_original: correo, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregada cuenta: ' + rango + ' ' + mmr + ' MMR');
-
-                products = current;
-                updateCounts();
-                showToast('Cuenta ' + rango + ' publicada!', 'success');
-                resetForm('cuenta');
+                currentImageUrl = cloudData.secure_url;
+                showToast('Imagen subida! Ahora crea el Issue', 'success');
+                document.getElementById('cuenta-step2').style.display = 'flex';
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
@@ -809,39 +694,50 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
         }
 
         // ============================================================
-        // PUBLICAR MENSAJERO
+        // CREAR ISSUE CUENTA (PASO 2)
+        // ============================================================
+        function createCuentaIssue() {
+            const mmr = document.getElementById('cuenta-mmr').value;
+            const rango = document.getElementById('cuenta-rango').value;
+            const comportamiento = document.getElementById('cuenta-comportamiento').value || '10000';
+            const steamLevel = document.getElementById('cuenta-steam-level').value || '0';
+            const correo = document.getElementById('cuenta-correo').value;
+            const precio = document.getElementById('cuenta-precio').value;
+            const descripcion = document.getElementById('cuenta-descripcion').value.trim();
+
+            if (!mmr || !rango || !precio) { showToast('Completa campos obligatorios', 'error'); return; }
+            if (!currentImageUrl) { showToast('Primero sube la imagen', 'error'); return; }
+
+            const issueBody = 'tipo: cuenta\n' +
+                'mmr: ' + mmr + '\n' +
+                'rango: ' + rango + '\n' +
+                'comportamiento: ' + comportamiento + '\n' +
+                'steam_level: ' + steamLevel + '\n' +
+                'correo_original: ' + correo + '\n' +
+                'precio: ' + precio + '\n' +
+                'imagen_url: ' + currentImageUrl + '\n' +
+                'descripcion: ' + descripcion;
+
+            const issueTitle = 'Nueva cuenta: ' + rango + ' ' + mmr + ' MMR';
+            const url = 'https://github.com/' + REPO_OWNER + '/' + REPO_NAME + '/issues/new?title=' + encodeURIComponent(issueTitle) + '&body=' + encodeURIComponent(issueBody);
+
+            window.open(url, '_blank');
+            showToast('Issue abierto en GitHub. Completa el Issue.', 'info');
+        }
+
+        // ============================================================
+        // PUBLICAR MENSAJERO (PASO 1)
         // ============================================================
         async function publishMensajero() {
-            const nombre = document.getElementById('mensajero-nombre').value.trim();
-            const calidad = document.getElementById('mensajero-calidad').value;
-            const precio = parseFloat(document.getElementById('mensajero-precio').value);
-            const descripcion = document.getElementById('mensajero-descripcion').value.trim();
             const imagenFile = document.getElementById('mensajero-imagen').files[0];
-
-            if (!nombre || !calidad || !precio || !imagenFile) {
-                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
-            }
+            if (!imagenFile) { showToast('Selecciona una imagen primero', 'error'); return; }
 
             setLoading('mensajero', true);
             try {
-                showToast('Subiendo imagen...', 'info');
                 const cloudData = await uploadToCloudinary(imagenFile, 'mensajero');
-                showToast('Imagen subida!', 'success');
-
-                const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'mensajero_' + Date.now(), tipo: 'mensajero', nombre: nombre,
-                    calidad: calidad, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado mensajero: ' + nombre);
-
-                products = current;
-                updateCounts();
-                showToast('Mensajero "' + nombre + '" publicado!', 'success');
-                resetForm('mensajero');
+                currentImageUrl = cloudData.secure_url;
+                showToast('Imagen subida! Ahora crea el Issue', 'success');
+                document.getElementById('mensajero-step2').style.display = 'flex';
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
@@ -850,39 +746,44 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
         }
 
         // ============================================================
-        // PUBLICAR OTRO
+        // CREAR ISSUE MENSAJERO (PASO 2)
+        // ============================================================
+        function createMensajeroIssue() {
+            const nombre = document.getElementById('mensajero-nombre').value.trim();
+            const calidad = document.getElementById('mensajero-calidad').value;
+            const precio = document.getElementById('mensajero-precio').value;
+            const descripcion = document.getElementById('mensajero-descripcion').value.trim();
+
+            if (!nombre || !calidad || !precio) { showToast('Completa campos obligatorios', 'error'); return; }
+            if (!currentImageUrl) { showToast('Primero sube la imagen', 'error'); return; }
+
+            const issueBody = 'tipo: mensajero\n' +
+                'nombre: ' + nombre + '\n' +
+                'calidad: ' + calidad + '\n' +
+                'precio: ' + precio + '\n' +
+                'imagen_url: ' + currentImageUrl + '\n' +
+                'descripcion: ' + descripcion;
+
+            const issueTitle = 'Nuevo mensajero: ' + nombre;
+            const url = 'https://github.com/' + REPO_OWNER + '/' + REPO_NAME + '/issues/new?title=' + encodeURIComponent(issueTitle) + '&body=' + encodeURIComponent(issueBody);
+
+            window.open(url, '_blank');
+            showToast('Issue abierto en GitHub. Completa el Issue.', 'info');
+        }
+
+        // ============================================================
+        // PUBLICAR OTRO (PASO 1)
         // ============================================================
         async function publishOtro() {
-            const nombre = document.getElementById('otro-nombre').value.trim();
-            const categoria = document.getElementById('otro-categoria').value;
-            const precio = parseFloat(document.getElementById('otro-precio').value);
-            const descripcion = document.getElementById('otro-descripcion').value.trim();
             const imagenFile = document.getElementById('otro-imagen').files[0];
-
-            if (!nombre || !categoria || !precio || !imagenFile) {
-                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
-            }
+            if (!imagenFile) { showToast('Selecciona una imagen primero', 'error'); return; }
 
             setLoading('otro', true);
             try {
-                showToast('Subiendo imagen...', 'info');
                 const cloudData = await uploadToCloudinary(imagenFile, 'otro');
-                showToast('Imagen subida!', 'success');
-
-                const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'otro_' + Date.now(), tipo: 'otro', nombre: nombre,
-                    categoria: categoria, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado producto: ' + nombre);
-
-                products = current;
-                updateCounts();
-                showToast('Producto "' + nombre + '" publicado!', 'success');
-                resetForm('otro');
+                currentImageUrl = cloudData.secure_url;
+                showToast('Imagen subida! Ahora crea el Issue', 'success');
+                document.getElementById('otro-step2').style.display = 'flex';
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
@@ -891,104 +792,30 @@ const CLOUDINARY_UPLOAD_URL = "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CL
         }
 
         // ============================================================
-        // ELIMINAR PRODUCTO
+        // CREAR ISSUE OTRO (PASO 2)
         // ============================================================
-        async function deleteProduct(productId) {
-    if (!confirm('Seguro que deseas eliminar este producto?\n\nNOTA: La imagen en Cloudinary NO se borrara automaticamente.')) {
-        return;
-    }
+        function createOtroIssue() {
+            const nombre = document.getElementById('otro-nombre').value.trim();
+            const categoria = document.getElementById('otro-categoria').value;
+            const precio = document.getElementById('otro-precio').value;
+            const descripcion = document.getElementById('otro-descripcion').value.trim();
 
-    setLoading('hero', true);
-    try {
-        const current = await fetchProductsFromGitHub();
-        const filtered = current.filter(function(p) { return p.id !== productId; });
-        if (filtered.length === current.length) {
-            throw new Error('Producto no encontrado');
+            if (!nombre || !categoria || !precio) { showToast('Completa campos obligatorios', 'error'); return; }
+            if (!currentImageUrl) { showToast('Primero sube la imagen', 'error'); return; }
+
+            const issueBody = 'tipo: otro\n' +
+                'nombre: ' + nombre + '\n' +
+                'categoria: ' + categoria + '\n' +
+                'precio: ' + precio + '\n' +
+                'imagen_url: ' + currentImageUrl + '\n' +
+                'descripcion: ' + descripcion;
+
+            const issueTitle = 'Nuevo producto: ' + nombre;
+            const url = 'https://github.com/' + REPO_OWNER + '/' + REPO_NAME + '/issues/new?title=' + encodeURIComponent(issueTitle) + '&body=' + encodeURIComponent(issueBody);
+
+            window.open(url, '_blank');
+            showToast('Issue abierto en GitHub. Completa el Issue.', 'info');
         }
-        await saveProductsToGitHub(filtered, 'Eliminado producto ID: ' + productId);
-        products = filtered;
-        updateCounts();
-        renderListado();
-        showToast('Producto eliminado', 'warning');
-    } catch (error) {
-        showToast(error.message, 'error');
-    } finally {
-        setLoading('hero', false);
-    }
-}
-
-        // ============================================================
-        // SINCRONIZACION
-        // ============================================================
-        async function syncFromGitHub() {
-            try {
-                products = await fetchProductsFromGitHub();
-                updateCounts();
-                showToast(products.length + ' productos cargados', 'success');
-                renderListado();
-            } catch (error) {
-                showToast(error.message, 'error');
-            }
-        }
-
-        function updateCounts() {
-            const heroes = products.filter(function(p) { return p.tipo === 'heroe'; }).length;
-            const cuentas = products.filter(function(p) { return p.tipo === 'cuenta'; }).length;
-            const mensajeros = products.filter(function(p) { return p.tipo === 'mensajero'; }).length;
-            const otros = products.filter(function(p) { return p.tipo === 'otro'; }).length;
-            document.getElementById('totalProducts').innerText = products.length;
-            document.getElementById('count-heroes').innerText = heroes;
-            document.getElementById('count-cuentas').innerText = cuentas;
-            document.getElementById('count-mensajeros').innerText = mensajeros;
-            document.getElementById('count-otros').innerText = otros;
-        }
-
-        // ============================================================
-        // RENDER LISTADO
-        // ============================================================
-        function renderListado() {
-            renderCategoryList('heroes', products.filter(function(p) { return p.tipo === 'heroe'; }), 'list-heroes');
-            renderCategoryList('cuentas', products.filter(function(p) { return p.tipo === 'cuenta'; }), 'list-cuentas');
-            renderCategoryList('mensajeros', products.filter(function(p) { return p.tipo === 'mensajero'; }), 'list-mensajeros');
-            renderCategoryList('otros', products.filter(function(p) { return p.tipo === 'otro'; }), 'list-otros');
-        }
-
-        function renderCategoryList(tipo, items, containerId) {
-            const container = document.getElementById(containerId);
-            if (!items || items.length === 0) {
-                container.innerHTML = '<div class="empty-state">No hay productos en esta categoria.</div>';
-                return;
-            }
-            let html = '';
-            items.slice().reverse().forEach(function(p, i) {
-                const isSpecial = p.rareza === 'Arcano' || p.rareza === 'Inmortal' || p.calidad === 'Arcano' || p.calidad === 'Inmortal';
-                const displayName = p.nombre || (p.rango ? 'Cuenta ' + p.rango + ' ' + p.mmr + ' MMR' : 'Sin nombre');
-                const imgSrc = p.imagen_url || 'img/placeholder.jpg';
-
-                html += '<div class="product-card" style="animation: fadeIn 0.4s ease ' + (i * 0.05) + 's forwards; opacity:0;">';
-                if (p.rareza || p.calidad) {
-                    html += '<span class="rareza-badge ' + getRarezaClass(p.rareza || p.calidad) + '">' + (p.rareza || p.calidad) + '</span>';
-                }
-                html += '<img src="' + imgSrc + '" class="product-img" alt="' + displayName + '" onerror="this.src=\'https://via.placeholder.com/300x150/161413/e5a823?text=Sin+Imagen\'" loading="lazy">';
-                html += '<div class="product-info">';
-                html += '<div class="product-title">' + displayName + '</div>';
-                html += '<div class="product-meta">';
-                if (p.heroe) html += 'Heroe: ' + p.heroe + '<br>';
-                if (p.rango) html += 'Rango: ' + p.rango + ' | MMR: ' + p.mmr + '<br>';
-                if (p.categoria) html += 'Categoria: ' + p.categoria + '<br>';
-                html += (p.descripcion || '') + '<br>ID: ' + p.id;
-                html += '</div>';
-                html += '<div class="product-price">$' + parseFloat(p.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<div class="product-actions">';
-                    html += '<button class="btn btn-danger" onclick="deleteProduct(\'' + p.id + '\')">Eliminar</button>';
-                html += '</div></div></div>';
-            });
-            container.innerHTML = html;
-        }
-
-        const style = document.createElement('style');
-        style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
