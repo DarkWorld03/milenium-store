@@ -500,19 +500,10 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- CONFIG EXTERNO -->
+    <script src="config.js"></script>
+
     <script>
-        // ============================================================
-        // CREDENCIALES
-        // ============================================================
-        const GITHUB_TOKEN = "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";
-        const REPO_OWNER = "DarkWorld03";
-        const REPO_NAME = "milenium-store";
-        const CLOUDINARY_CLOUD_NAME = "dtjb4m3ij";
-        const CLOUDINARY_UPLOAD_PRESET = "milenium_preset";
-
-        const GITHUB_API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/productos.json`;
-        const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-
         // ============================================================
         // HEROES DOTA 2
         // ============================================================
@@ -681,10 +672,10 @@
             try {
                 const response = await fetch(GITHUB_API_URL, {
                     method: 'GET',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+                    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
                 });
                 if (response.status === 404) { githubSha = null; return []; }
-                if (!response.ok) throw new Error(`GitHub GET ${response.status}: ${response.statusText}`);
+                if (!response.ok) throw new Error('GitHub GET ' + response.status + ': ' + response.statusText);
                 const data = await response.json();
                 githubSha = data.sha;
                 const content = atob(data.content);
@@ -704,7 +695,7 @@
 
                 const response = await fetch(GITHUB_API_URL, {
                     method: 'PUT',
-                    headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                    headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
                     body: JSON.stringify(body)
                 });
                 if (!response.ok) {
@@ -751,11 +742,11 @@
                     descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
                 };
                 current.push(newProduct);
-                await saveProductsToGitHub(current, `Agregado skin: ${nombre} (${heroe})`);
+                await saveProductsToGitHub(current, 'Agregado skin: ' + nombre + ' (' + heroe + ')');
 
                 products = current;
                 updateCounts();
-                showToast(`Skin "${nombre}" publicada!`, 'success');
+                showToast('Skin "' + nombre + '" publicada!', 'success');
                 resetForm('hero');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -796,11 +787,11 @@
                     descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
                 };
                 current.push(newProduct);
-                await saveProductsToGitHub(current, `Agregada cuenta: ${rango} ${mmr} MMR`);
+                await saveProductsToGitHub(current, 'Agregada cuenta: ' + rango + ' ' + mmr + ' MMR');
 
                 products = current;
                 updateCounts();
-                showToast(`Cuenta ${rango} publicada!`, 'success');
+                showToast('Cuenta ' + rango + ' publicada!', 'success');
                 resetForm('cuenta');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -837,11 +828,11 @@
                     descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
                 };
                 current.push(newProduct);
-                await saveProductsToGitHub(current, `Agregado mensajero: ${nombre}`);
+                await saveProductsToGitHub(current, 'Agregado mensajero: ' + nombre);
 
                 products = current;
                 updateCounts();
-                showToast(`Mensajero "${nombre}" publicado!`, 'success');
+                showToast('Mensajero "' + nombre + '" publicado!', 'success');
                 resetForm('mensajero');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -878,11 +869,11 @@
                     descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
                 };
                 current.push(newProduct);
-                await saveProductsToGitHub(current, `Agregado producto: ${nombre}`);
+                await saveProductsToGitHub(current, 'Agregado producto: ' + nombre);
 
                 products = current;
                 updateCounts();
-                showToast(`Producto "${nombre}" publicado!`, 'success');
+                showToast('Producto "' + nombre + '" publicado!', 'success');
                 resetForm('otro');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -925,7 +916,7 @@
             try {
                 products = await fetchProductsFromGitHub();
                 updateCounts();
-                showToast(`${products.length} productos cargados`, 'success');
+                showToast(products.length + ' productos cargados', 'success');
                 renderListado();
             } catch (error) {
                 showToast(error.message, 'error');
@@ -933,10 +924,10 @@
         }
 
         function updateCounts() {
-            const heroes = products.filter(p => p.tipo === 'heroe').length;
-            const cuentas = products.filter(p => p.tipo === 'cuenta').length;
-            const mensajeros = products.filter(p => p.tipo === 'mensajero').length;
-            const otros = products.filter(p => p.tipo === 'otro').length;
+            const heroes = products.filter(function(p) { return p.tipo === 'heroe'; }).length;
+            const cuentas = products.filter(function(p) { return p.tipo === 'cuenta'; }).length;
+            const mensajeros = products.filter(function(p) { return p.tipo === 'mensajero'; }).length;
+            const otros = products.filter(function(p) { return p.tipo === 'otro'; }).length;
             document.getElementById('totalProducts').innerText = products.length;
             document.getElementById('count-heroes').innerText = heroes;
             document.getElementById('count-cuentas').innerText = cuentas;
@@ -948,10 +939,10 @@
         // RENDER LISTADO
         // ============================================================
         function renderListado() {
-            renderCategoryList('heroes', products.filter(p => p.tipo === 'heroe'), 'list-heroes');
-            renderCategoryList('cuentas', products.filter(p => p.tipo === 'cuenta'), 'list-cuentas');
-            renderCategoryList('mensajeros', products.filter(p => p.tipo === 'mensajero'), 'list-mensajeros');
-            renderCategoryList('otros', products.filter(p => p.tipo === 'otro'), 'list-otros');
+            renderCategoryList('heroes', products.filter(function(p) { return p.tipo === 'heroe'; }), 'list-heroes');
+            renderCategoryList('cuentas', products.filter(function(p) { return p.tipo === 'cuenta'; }), 'list-cuentas');
+            renderCategoryList('mensajeros', products.filter(function(p) { return p.tipo === 'mensajero'; }), 'list-mensajeros');
+            renderCategoryList('otros', products.filter(function(p) { return p.tipo === 'otro'; }), 'list-otros');
         }
 
         function renderCategoryList(tipo, items, containerId) {
@@ -961,34 +952,34 @@
                 return;
             }
             let html = '';
-            items.slice().reverse().forEach((p, i) => {
+            items.slice().reverse().forEach(function(p, i) {
                 const isSpecial = p.rareza === 'Arcano' || p.rareza === 'Inmortal' || p.calidad === 'Arcano' || p.calidad === 'Inmortal';
-                const displayName = p.nombre || (p.rango ? `Cuenta ${p.rango} ${p.mmr} MMR` : 'Sin nombre');
+                const displayName = p.nombre || (p.rango ? 'Cuenta ' + p.rango + ' ' + p.mmr + ' MMR' : 'Sin nombre');
                 const imgSrc = p.imagen_url || 'img/placeholder.jpg';
 
-                html += `<div class="product-card" style="animation: fadeIn 0.4s ease ${i * 0.05}s forwards; opacity:0;">`;
+                html += '<div class="product-card" style="animation: fadeIn 0.4s ease ' + (i * 0.05) + 's forwards; opacity:0;">';
                 if (p.rareza || p.calidad) {
-                    html += `<span class="rareza-badge ${getRarezaClass(p.rareza || p.calidad)}">${p.rareza || p.calidad}</span>`;
+                    html += '<span class="rareza-badge ' + getRarezaClass(p.rareza || p.calidad) + '">' + (p.rareza || p.calidad) + '</span>';
                 }
-                html += `<img src="${imgSrc}" class="product-img" alt="${displayName}" onerror="this.src='https://via.placeholder.com/300x150/161413/e5a823?text=Sin+Imagen'" loading="lazy">`;
-                html += `<div class="product-info">`;
-                html += `<div class="product-title">${displayName}</div>`;
-                html += `<div class="product-meta">`;
-                if (p.heroe) html += `Heroe: ${p.heroe}<br>`;
-                if (p.rango) html += `Rango: ${p.rango} | MMR: ${p.mmr}<br>`;
-                if (p.categoria) html += `Categoria: ${p.categoria}<br>`;
-                html += `${p.descripcion || ''}<br>ID: ${p.id}`;
-                html += `</div>`;
-                html += `<div class="product-price">$${parseFloat(p.precio || 0).toFixed(2)} USD</div>`;
-                html += `<div class="product-actions">`;
-                html += `<button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Eliminar</button>`;
-                html += `</div></div></div>`;
+                html += '<img src="' + imgSrc + '" class="product-img" alt="' + displayName + '" onerror="this.src=\'https://via.placeholder.com/300x150/161413/e5a823?text=Sin+Imagen\'" loading="lazy">';
+                html += '<div class="product-info">';
+                html += '<div class="product-title">' + displayName + '</div>';
+                html += '<div class="product-meta">';
+                if (p.heroe) html += 'Heroe: ' + p.heroe + '<br>';
+                if (p.rango) html += 'Rango: ' + p.rango + ' | MMR: ' + p.mmr + '<br>';
+                if (p.categoria) html += 'Categoria: ' + p.categoria + '<br>';
+                html += (p.descripcion || '') + '<br>ID: ' + p.id;
+                html += '</div>';
+                html += '<div class="product-price">$' + parseFloat(p.precio || 0).toFixed(2) + ' USD</div>';
+                html += '<div class="product-actions">';
+                    html += '<button class="btn btn-danger" onclick="deleteProduct(\'' + p.id + '\')">Eliminar</button>';
+                html += '</div></div></div>';
             });
             container.innerHTML = html;
         }
 
         const style = document.createElement('style');
-        style.textContent = `@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`;
+        style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
         document.head.appendChild(style);
     </script>
 </body>
