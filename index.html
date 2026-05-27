@@ -453,6 +453,7 @@
         }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <div class="app-container">
@@ -701,7 +702,7 @@
             loadCatalogData();
 
             // Auto-recarga cada 15 segundos (mas rapido, datos siempre frescos)
-            setInterval(loadCatalogData, 15000);
+            setInterval(loadCatalogData, 300000); // 5 minutos
         };
 
         // ============================================================
@@ -768,9 +769,9 @@
             var html = '';
             heroes.forEach(function(h, i) {
                 var isSpecial = h.rareza === 'Arcano' || h.rareza === 'Inmortal' || h.rareza === 'Ancestral';
-                var heroName = h.hero ? (h.hero.charAt(0).toUpperCase() + h.hero.slice(1)) : 'Desconocido';
+                var heroName = h.hero ? h.hero.replace(/\b\w/g, function(l) { return l.toUpperCase(); }) : 'Desconocido';
                 var imgSrc = getImageSrc(h);
-                var placeholder = 'https://via.placeholder.com/280x200/161413/e5a823?text=' + encodeURIComponent(h.hero || 'skin');
+                var placeholder = 'https://via.placeholder.com/280x200/161413/e5a823?text=' + encodeURIComponent(heroName || 'skin');
                 html += '<div class="card ' + (isSpecial ? 'skin-raro' : '') + '" style="animation-delay: ' + (i * 0.05) + 's">';
                 html += '<div class="card-img-container">';
                 html += '<span class="badge">Disponible</span>';
