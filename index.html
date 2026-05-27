@@ -783,7 +783,7 @@
                 html += '<div class="card-title">' + (h.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">Heroe: ' + heroName + '<br>' + (h.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(h.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal('' + imgSrc + '','' + (h.nombre || 'Producto') + '')">Ver</button></div>';
+                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (h.nombre || 'Producto') + '\')">Ver</button></div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -837,7 +837,7 @@
                 html += '<div class="card-title">' + (m.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">' + (m.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(m.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa el mensajero: ' + encodeURIComponent(m.nombre || 'mensajero') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal('' + imgSrc + '','' + (m.nombre || 'Mensajero') + '')">Ver</button></div>';
+                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa el mensajero: ' + encodeURIComponent(m.nombre || 'mensajero') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (m.nombre || 'Mensajero') + '\')">Ver</button></div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -861,7 +861,7 @@
                 html += '<div class="card-title">' + (o.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">' + (o.categoria || 'Sin categoria') + '<br>' + (o.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(o.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(o.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal('' + imgSrc + '','' + (o.nombre || 'Producto') + '')">Ver</button></div>';
+                html += '<div style="display:flex;gap:8px;"><a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(o.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a><button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (o.nombre || 'Producto') + '\')">Ver</button></div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
