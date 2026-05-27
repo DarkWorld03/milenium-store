@@ -24,5 +24,55 @@
       "cloudinary_public_id": "milenium_store/e6f56bqdfn70cvinwpwh",
       "descripcion": "",
       "fecha": "2026-05-27"
+    },
+    {
+      "id": "cuenta_1779898186039",
+      "tipo": "cuenta",
+      "mmr": 6000,
+      "rango": "Inmortal",
+      "comportamiento": 12000,
+      "steam_level": 1,
+      "correo_original": true,
+      "precio": "100.00",
+      "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898185/milenium_store/plmpbmklaj0lfbdaqjy5.png",
+      "cloudinary_public_id": "milenium_store/plmpbmklaj0lfbdaqjy5",
+      "descripcion": "",
+      "fecha": "2026-05-27"
+    },
+    {
+      "id": "hero_1779898632497",
+      "tipo": "heroe",
+      "nombre": "Enchanyre",
+      "heroe": "enchantress",
+      "rareza": "Inmortal",
+      "precio": "2.00",
+      "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898631/milenium_store/cjnw3jywsr1r8opujvwn.jpg",
+      "cloudinary_public_id": "milenium_store/cjnw3jywsr1r8opujvwn",
+      "descripcion": "",
+      "fecha": "2026-05-27"
+    },
+    {
+      "id": "hero_1779898659839",
+      "tipo": "heroe",
+      "nombre": "Dark ser",
+      "heroe": "dark seer",
+      "rareza": "Inmortal",
+      "precio": "2.00",
+      "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898658/milenium_store/qk02oagbvpq1qkbhahdm.jpg",
+      "cloudinary_public_id": "milenium_store/qk02oagbvpq1qkbhahdm",
+      "descripcion": "",
+      "fecha": "2026-05-27"
+    },
+    {
+      "id": "hero_1779898706325",
+      "tipo": "heroe",
+      "nombre": "Mepo",
+      "heroe": "meepo",
+      "rareza": "Inmortal",
+      "precio": "3.00",
+      "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898704/milenium_store/pyji9enqyh3lvzqvevyv.jpg",
+      "cloudinary_public_id": "milenium_store/pyji9enqyh3lvzqvevyv",
+      "descripcion": "",
+      "fecha": "2026-05-27"
     }
   ]

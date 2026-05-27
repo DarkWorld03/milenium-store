@@ -222,6 +222,7 @@
         .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; width: 0%; transition: width 0.3s; }
     </style>
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <!-- LOGIN -->
@@ -1205,6 +1206,7 @@ let editingProductId = null;
                 html += '</div>';
                 html += '<div class="product-price">$' + parseFloat(p.precio || 0).toFixed(2) + ' USD</div>';
                 html += '<div class="product-actions">';
+                html += '<button class="btn btn-primary" onclick="editProduct(\'' + p.id + '\')" style="background:linear-gradient(180deg,#e5a823,#b8860b);border-color:#e5a823;color:#1a1a1a;">Editar</button>';
                 html += '<button class="btn btn-danger" onclick="deleteProduct(\'' + p.id + '\')">Eliminar</button>';
                 html += '</div></div></div>';
             });

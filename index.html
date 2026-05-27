@@ -455,6 +455,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <div class="app-container">
@@ -770,7 +771,7 @@
             var html = '';
             heroes.forEach(function(h, i) {
                 var isSpecial = h.rareza === 'Arcano' || h.rareza === 'Inmortal' || h.rareza === 'Ancestral';
-                var heroName = h.hero ? h.hero.replace(/\b\w/g, function(l) { return l.toUpperCase(); }) : 'Desconocido';
+                var heroName = h.heroe ? h.heroe.replace(/\b\w/g, function(l) { return l.toUpperCase(); }) : 'Desconocido';
                 var imgSrc = getImageSrc(h);
                 var placeholder = 'https://via.placeholder.com/280x200/161413/e5a823?text=' + encodeURIComponent(heroName || 'skin');
                 html += '<div class="card ' + (isSpecial ? 'skin-raro' : '') + '" style="animation-delay: ' + (i * 0.05) + 's">';
@@ -783,7 +784,10 @@
                 html += '<div class="card-title">' + (h.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">Heroe: ' + heroName + '<br>' + (h.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(h.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank">Comprar</a>';
+                html += '<div style="display:flex;gap:8px;">';
+                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a>';
+                html += '<button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (h.nombre || 'Skin') + '\')">Ver</button>';
+                html += '</div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
