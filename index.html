@@ -454,6 +454,7 @@
     </style>
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <div class="app-container">
@@ -782,7 +783,7 @@
                 html += '<div class="card-title">' + (h.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">Heroe: ' + heroName + '<br>' + (h.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(h.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank">Pedir por WhatsApp</a>';
+                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(h.nombre || 'producto') + '" class="btn-comprar" target="_blank">Comprar</a>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -810,7 +811,10 @@
                 html += 'Lv. Steam: ' + (c.steam_level || 'N/A') + ' | Correo original: ' + (c.correo_original ? 'Si' : 'No') + '<br>';
                 html += (c.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(c.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<a href="https://wa.me/?text=Hola! Me interesa la cuenta: ' + encodeURIComponent((c.rango || '') + ' ' + (c.mmr || '') + ' MMR') + '" class="btn-comprar" target="_blank">Consultar Cuenta</a>';
+                html += '<div style="display:flex;gap:8px;">';
+                html += '<a href="https://wa.me/?text=Hola! Me interesa la cuenta: ' + encodeURIComponent((c.rango || '') + ' ' + (c.mmr || '') + ' MMR') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a>';
+                html += '<button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'Cuenta ' + (c.rango || '') + ' ' + (c.mmr || '') + ' MMR\')">';
+                html += '</div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -836,7 +840,10 @@
                 html += '<div class="card-title">' + (m.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">' + (m.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(m.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<a href="https://wa.me/?text=Hola! Me interesa el mensajero: ' + encodeURIComponent(m.nombre || 'mensajero') + '" class="btn-comprar" target="_blank">Pedir por WhatsApp</a>';
+                html += '<div style="display:flex;gap:8px;">';
+                html += '<a href="https://wa.me/?text=Hola! Me interesa el mensajero: ' + encodeURIComponent(m.nombre || 'mensajero') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a>';
+                html += '<button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (m.nombre || 'Mensajero') + '\')">Ver</button>';
+                html += '</div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -860,7 +867,10 @@
                 html += '<div class="card-title">' + (o.nombre || 'Sin nombre') + '</div>';
                 html += '<div class="card-meta">' + (o.categoria || 'Sin categoria') + '<br>' + (o.descripcion || '') + '</div>';
                 html += '<div class="card-precio">$' + parseFloat(o.precio || 0).toFixed(2) + ' USD</div>';
-                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(o.nombre || 'producto') + '" class="btn-comprar" target="_blank">Pedir por WhatsApp</a>';
+                html += '<div style="display:flex;gap:8px;">';
+                html += '<a href="https://wa.me/?text=Hola! Me interesa: ' + encodeURIComponent(o.nombre || 'producto') + '" class="btn-comprar" target="_blank" style="flex:1;">Comprar</a>';
+                html += '<button class="btn-comprar" style="flex:1;background:linear-gradient(180deg,#444,#222);border-color:#666;" onclick="openImageModal(\'' + imgSrc + '\',\'' + (o.nombre || 'Producto') + '\')">Ver</button>';
+                html += '</div>';
                 html += '</div></div>';
             });
             grid.innerHTML = html;
@@ -933,6 +943,30 @@
             renderOtros(filtered);
             if (window.innerWidth <= 768) closeSidebar();
         }
+    </script>
+
+    <!-- MODAL VER IMAGEN -->
+    <div id="imageModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);z-index:10000;align-items:center;justify-content:center;flex-direction:column;" onclick="closeImageModal(event)">
+        <img id="modalImage" src="" alt="" style="max-width:90%;max-height:80%;object-fit:contain;border-radius:12px;box-shadow:0 0 40px rgba(255,69,0,0.3);">
+        <div id="modalTitle" style="color:var(--secondary);margin-top:20px;font-size:18px;font-weight:700;text-align:center;padding:0 20px;"></div>
+        <button onclick="closeImageModal()" style="margin-top:20px;background:linear-gradient(180deg,#ca3422,#8a170c);color:white;border:1px solid var(--primary);padding:12px 30px;border-radius:8px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;">Cerrar</button>
+    </div>
+
+    <script>
+        function openImageModal(src, title) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('imageModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeImageModal(e) {
+            if (e && e.target !== document.getElementById('imageModal') && e.target.tagName !== 'BUTTON') return;
+            document.getElementById('imageModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeImageModal();
+        });
     </script>
 </body>
 </html>

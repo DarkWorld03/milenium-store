@@ -1,0 +1,3 @@
+[build]
+  # Esto le dice a Netlify que el comando de construcción no hace nada
+  command = "exit 0"
