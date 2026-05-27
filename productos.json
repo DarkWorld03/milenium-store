@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "hero_1779848834902",
+    "tipo": "heroe",
+    "nombre": "Sniper rifle",
+    "heroe": "sniper",
+    "rareza": "Inmortal",
+    "precio": "10.00",
+    "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779848832/milenium_store/evpdkclh1obrs0mspfoz.jpg",
+    "cloudinary_public_id": "milenium_store/evpdkclh1obrs0mspfoz",
+    "descripcion": "Inmortal pass",
+    "fecha": "2026-05-27"
+  }
+]
