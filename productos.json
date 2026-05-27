@@ -10,5 +10,19 @@
     "cloudinary_public_id": "milenium_store/evpdkclh1obrs0mspfoz",
     "descripcion": "Inmortal pass",
     "fecha": "2026-05-27"
+  },
+  {
+    "id": "cuenta_1779851771369",
+    "tipo": "cuenta",
+    "mmr": 6000,
+    "rango": "Inmortal",
+    "comportamiento": 10000,
+    "steam_level": 1,
+    "correo_original": true,
+    "precio": "60.00",
+    "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779851769/milenium_store/e6f56bqdfn70cvinwpwh.jpg",
+    "cloudinary_public_id": "milenium_store/e6f56bqdfn70cvinwpwh",
+    "descripcion": "",
+    "fecha": "2026-05-27"
   }
 ]
