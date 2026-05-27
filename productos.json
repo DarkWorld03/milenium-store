@@ -38,5 +38,17 @@
     "cloudinary_public_id": "milenium_store/plmpbmklaj0lfbdaqjy5",
     "descripcion": "",
     "fecha": "2026-05-27"
+  },
+  {
+    "id": "hero_1779898632497",
+    "tipo": "heroe",
+    "nombre": "Enchanyre",
+    "heroe": "enchantress",
+    "rareza": "Inmortal",
+    "precio": "2.00",
+    "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898631/milenium_store/cjnw3jywsr1r8opujvwn.jpg",
+    "cloudinary_public_id": "milenium_store/cjnw3jywsr1r8opujvwn",
+    "descripcion": "",
+    "fecha": "2026-05-27"
   }
 ]
