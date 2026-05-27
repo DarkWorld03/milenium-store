@@ -50,5 +50,17 @@
     "cloudinary_public_id": "milenium_store/cjnw3jywsr1r8opujvwn",
     "descripcion": "",
     "fecha": "2026-05-27"
+  },
+  {
+    "id": "hero_1779898659839",
+    "tipo": "heroe",
+    "nombre": "Dark ser",
+    "heroe": "dark seer",
+    "rareza": "Inmortal",
+    "precio": "2.00",
+    "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898658/milenium_store/qk02oagbvpq1qkbhahdm.jpg",
+    "cloudinary_public_id": "milenium_store/qk02oagbvpq1qkbhahdm",
+    "descripcion": "",
+    "fecha": "2026-05-27"
   }
 ]
