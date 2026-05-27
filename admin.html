@@ -221,6 +221,7 @@
         .progress-container { width: 100%; height: 4px; background: var(--bg-input); border-radius: 2px; margin-top: 8px; display: none; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; width: 0%; transition: width 0.3s; }
     </style>
+<base target="_blank">
 </head>
 <body>
     <!-- LOGIN -->
@@ -314,6 +315,7 @@
                                 <span id="hero-btn-text">Publicar Skin</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('hero')">Limpiar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;" id="hero-cancel-btn">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -378,6 +380,7 @@
                                 <span id="cuenta-btn-text">Publicar Cuenta</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('cuenta')">Limpiar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;" id="cuenta-cancel-btn">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -427,6 +430,7 @@
                                 <span id="mensajero-btn-text">Publicar Mensajero</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('mensajero')">Limpiar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;" id="mensajero-cancel-btn">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -473,6 +477,7 @@
                                 <span id="otro-btn-text">Publicar Producto</span>
                             </button>
                             <button type="button" class="btn btn-secondary" onclick="resetForm('otro')">Limpiar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelEdit()" style="display:none;" id="otro-cancel-btn">Cancelar</button>
                         </div>
                     </form>
                 </div>
@@ -538,6 +543,7 @@
         ];
 
         let products = [];
+let editingProductId = null;
         let githubSha = null;
 
         // ============================================================
@@ -716,7 +722,7 @@
         }
 
         // ============================================================
-        // PUBLICAR HEROE
+        // PUBLICAR / EDITAR HEROE
         // ============================================================
         async function publishHero() {
             const nombre = document.getElementById('hero-nombre').value.trim();
@@ -726,29 +732,63 @@
             const descripcion = document.getElementById('hero-descripcion').value.trim();
             const imagenFile = document.getElementById('hero-imagen').files[0];
 
-            if (!nombre || !heroe || !rareza || !precio || !imagenFile) {
+            if (!nombre || !heroe || !rareza || !precio) {
                 showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+            // Si es nuevo producto, requiere imagen. Si es edicion, la imagen es opcional.
+            if (!editingProductId && !imagenFile) {
+                showToast('Selecciona una imagen para el producto', 'error'); return;
             }
 
             setLoading('hero', true);
             try {
-                showToast('Subiendo imagen...', 'info');
-                const cloudData = await uploadToCloudinary(imagenFile, 'hero');
-                showToast('Imagen subida!', 'success');
-
                 const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'hero_' + Date.now(), tipo: 'heroe', nombre: nombre, heroe: heroe,
-                    rareza: rareza, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado skin: ' + nombre + ' (' + heroe + ')');
+
+                let imagen_url, cloudinary_public_id;
+
+                if (imagenFile) {
+                    showToast('Subiendo imagen...', 'info');
+                    const cloudData = await uploadToCloudinary(imagenFile, 'hero');
+                    imagen_url = cloudData.secure_url;
+                    cloudinary_public_id = cloudData.public_id;
+                    showToast('Imagen subida!', 'success');
+                } else if (editingProductId) {
+                    // Mantener imagen existente
+                    const existing = current.find(function(p) { return p.id === editingProductId; });
+                    imagen_url = existing ? existing.imagen_url : '';
+                    cloudinary_public_id = existing ? existing.cloudinary_public_id : '';
+                }
+
+                if (editingProductId) {
+                    // EDITAR existente
+                    const idx = current.findIndex(function(p) { return p.id === editingProductId; });
+                    if (idx !== -1) {
+                        current[idx] = {
+                            id: editingProductId, tipo: 'heroe', nombre: nombre, heroe: heroe,
+                            rareza: rareza, precio: precio.toFixed(2),
+                            imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                            descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                        };
+                        await saveProductsToGitHub(current, 'Editado skin: ' + nombre + ' (' + heroe + ')');
+                        showToast('Skin "' + nombre + '" actualizada!', 'success');
+                    }
+                    editingProductId = null;
+                    document.getElementById('hero-btn-text').innerText = 'Publicar Skin';
+                } else {
+                    // NUEVO producto
+                    const newProduct = {
+                        id: 'hero_' + Date.now(), tipo: 'heroe', nombre: nombre, heroe: heroe,
+                        rareza: rareza, precio: precio.toFixed(2),
+                        imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                        descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                    };
+                    current.push(newProduct);
+                    await saveProductsToGitHub(current, 'Agregado skin: ' + nombre + ' (' + heroe + ')');
+                    showToast('Skin "' + nombre + '" publicada!', 'success');
+                }
 
                 products = current;
                 updateCounts();
-                showToast('Skin "' + nombre + '" publicada!', 'success');
                 resetForm('hero');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -758,7 +798,7 @@
         }
 
         // ============================================================
-        // PUBLICAR CUENTA
+        // PUBLICAR / EDITAR CUENTA
         // ============================================================
         async function publishCuenta() {
             const mmr = parseInt(document.getElementById('cuenta-mmr').value);
@@ -770,30 +810,61 @@
             const descripcion = document.getElementById('cuenta-descripcion').value.trim();
             const imagenFile = document.getElementById('cuenta-imagen').files[0];
 
-            if (!mmr || !rango || !precio || !imagenFile) {
+            if (!mmr || !rango || !precio) {
                 showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+            if (!editingProductId && !imagenFile) {
+                showToast('Selecciona una imagen para la cuenta', 'error'); return;
             }
 
             setLoading('cuenta', true);
             try {
-                showToast('Subiendo imagen...', 'info');
-                const cloudData = await uploadToCloudinary(imagenFile, 'cuenta');
-                showToast('Imagen subida!', 'success');
-
                 const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'cuenta_' + Date.now(), tipo: 'cuenta', mmr: mmr, rango: rango,
-                    comportamiento: comportamiento, steam_level: steamLevel,
-                    correo_original: correo, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregada cuenta: ' + rango + ' ' + mmr + ' MMR');
+
+                let imagen_url, cloudinary_public_id;
+
+                if (imagenFile) {
+                    showToast('Subiendo imagen...', 'info');
+                    const cloudData = await uploadToCloudinary(imagenFile, 'cuenta');
+                    imagen_url = cloudData.secure_url;
+                    cloudinary_public_id = cloudData.public_id;
+                    showToast('Imagen subida!', 'success');
+                } else if (editingProductId) {
+                    const existing = current.find(function(p) { return p.id === editingProductId; });
+                    imagen_url = existing ? existing.imagen_url : '';
+                    cloudinary_public_id = existing ? existing.cloudinary_public_id : '';
+                }
+
+                if (editingProductId) {
+                    const idx = current.findIndex(function(p) { return p.id === editingProductId; });
+                    if (idx !== -1) {
+                        current[idx] = {
+                            id: editingProductId, tipo: 'cuenta', mmr: mmr, rango: rango,
+                            comportamiento: comportamiento, steam_level: steamLevel,
+                            correo_original: correo, precio: precio.toFixed(2),
+                            imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                            descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                        };
+                        await saveProductsToGitHub(current, 'Editada cuenta: ' + rango + ' ' + mmr + ' MMR');
+                        showToast('Cuenta ' + rango + ' actualizada!', 'success');
+                    }
+                    editingProductId = null;
+                    document.getElementById('cuenta-btn-text').innerText = 'Publicar Cuenta';
+                } else {
+                    const newProduct = {
+                        id: 'cuenta_' + Date.now(), tipo: 'cuenta', mmr: mmr, rango: rango,
+                        comportamiento: comportamiento, steam_level: steamLevel,
+                        correo_original: correo, precio: precio.toFixed(2),
+                        imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                        descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                    };
+                    current.push(newProduct);
+                    await saveProductsToGitHub(current, 'Agregada cuenta: ' + rango + ' ' + mmr + ' MMR');
+                    showToast('Cuenta ' + rango + ' publicada!', 'success');
+                }
 
                 products = current;
                 updateCounts();
-                showToast('Cuenta ' + rango + ' publicada!', 'success');
                 resetForm('cuenta');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -803,7 +874,7 @@
         }
 
         // ============================================================
-        // PUBLICAR MENSAJERO
+        // PUBLICAR / EDITAR MENSAJERO
         // ============================================================
         async function publishMensajero() {
             const nombre = document.getElementById('mensajero-nombre').value.trim();
@@ -812,29 +883,59 @@
             const descripcion = document.getElementById('mensajero-descripcion').value.trim();
             const imagenFile = document.getElementById('mensajero-imagen').files[0];
 
-            if (!nombre || !calidad || !precio || !imagenFile) {
+            if (!nombre || !calidad || !precio) {
                 showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+            if (!editingProductId && !imagenFile) {
+                showToast('Selecciona una imagen para el mensajero', 'error'); return;
             }
 
             setLoading('mensajero', true);
             try {
-                showToast('Subiendo imagen...', 'info');
-                const cloudData = await uploadToCloudinary(imagenFile, 'mensajero');
-                showToast('Imagen subida!', 'success');
-
                 const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'mensajero_' + Date.now(), tipo: 'mensajero', nombre: nombre,
-                    calidad: calidad, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado mensajero: ' + nombre);
+
+                let imagen_url, cloudinary_public_id;
+
+                if (imagenFile) {
+                    showToast('Subiendo imagen...', 'info');
+                    const cloudData = await uploadToCloudinary(imagenFile, 'mensajero');
+                    imagen_url = cloudData.secure_url;
+                    cloudinary_public_id = cloudData.public_id;
+                    showToast('Imagen subida!', 'success');
+                } else if (editingProductId) {
+                    const existing = current.find(function(p) { return p.id === editingProductId; });
+                    imagen_url = existing ? existing.imagen_url : '';
+                    cloudinary_public_id = existing ? existing.cloudinary_public_id : '';
+                }
+
+                if (editingProductId) {
+                    const idx = current.findIndex(function(p) { return p.id === editingProductId; });
+                    if (idx !== -1) {
+                        current[idx] = {
+                            id: editingProductId, tipo: 'mensajero', nombre: nombre,
+                            calidad: calidad, precio: precio.toFixed(2),
+                            imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                            descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                        };
+                        await saveProductsToGitHub(current, 'Editado mensajero: ' + nombre);
+                        showToast('Mensajero "' + nombre + '" actualizado!', 'success');
+                    }
+                    editingProductId = null;
+                    document.getElementById('mensajero-btn-text').innerText = 'Publicar Mensajero';
+                } else {
+                    const newProduct = {
+                        id: 'mensajero_' + Date.now(), tipo: 'mensajero', nombre: nombre,
+                        calidad: calidad, precio: precio.toFixed(2),
+                        imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                        descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                    };
+                    current.push(newProduct);
+                    await saveProductsToGitHub(current, 'Agregado mensajero: ' + nombre);
+                    showToast('Mensajero "' + nombre + '" publicado!', 'success');
+                }
 
                 products = current;
                 updateCounts();
-                showToast('Mensajero "' + nombre + '" publicado!', 'success');
                 resetForm('mensajero');
             } catch (error) {
                 showToast(error.message, 'error');
@@ -844,7 +945,7 @@
         }
 
         // ============================================================
-        // PUBLICAR OTRO
+        // PUBLICAR / EDITAR OTRO
         // ============================================================
         async function publishOtro() {
             const nombre = document.getElementById('otro-nombre').value.trim();
@@ -853,35 +954,165 @@
             const descripcion = document.getElementById('otro-descripcion').value.trim();
             const imagenFile = document.getElementById('otro-imagen').files[0];
 
-            if (!nombre || !categoria || !precio || !imagenFile) {
+            if (!nombre || !categoria || !precio) {
                 showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+            if (!editingProductId && !imagenFile) {
+                showToast('Selecciona una imagen para el producto', 'error'); return;
             }
 
             setLoading('otro', true);
             try {
-                showToast('Subiendo imagen...', 'info');
-                const cloudData = await uploadToCloudinary(imagenFile, 'otro');
-                showToast('Imagen subida!', 'success');
-
                 const current = await fetchProductsFromGitHub();
-                const newProduct = {
-                    id: 'otro_' + Date.now(), tipo: 'otro', nombre: nombre,
-                    categoria: categoria, precio: precio.toFixed(2),
-                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
-                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
-                };
-                current.push(newProduct);
-                await saveProductsToGitHub(current, 'Agregado producto: ' + nombre);
+
+                let imagen_url, cloudinary_public_id;
+
+                if (imagenFile) {
+                    showToast('Subiendo imagen...', 'info');
+                    const cloudData = await uploadToCloudinary(imagenFile, 'otro');
+                    imagen_url = cloudData.secure_url;
+                    cloudinary_public_id = cloudData.public_id;
+                    showToast('Imagen subida!', 'success');
+                } else if (editingProductId) {
+                    const existing = current.find(function(p) { return p.id === editingProductId; });
+                    imagen_url = existing ? existing.imagen_url : '';
+                    cloudinary_public_id = existing ? existing.cloudinary_public_id : '';
+                }
+
+                if (editingProductId) {
+                    const idx = current.findIndex(function(p) { return p.id === editingProductId; });
+                    if (idx !== -1) {
+                        current[idx] = {
+                            id: editingProductId, tipo: 'otro', nombre: nombre,
+                            categoria: categoria, precio: precio.toFixed(2),
+                            imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                            descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                        };
+                        await saveProductsToGitHub(current, 'Editado producto: ' + nombre);
+                        showToast('Producto "' + nombre + '" actualizado!', 'success');
+                    }
+                    editingProductId = null;
+                    document.getElementById('otro-btn-text').innerText = 'Publicar Producto';
+                } else {
+                    const newProduct = {
+                        id: 'otro_' + Date.now(), tipo: 'otro', nombre: nombre,
+                        categoria: categoria, precio: precio.toFixed(2),
+                        imagen_url: imagen_url, cloudinary_public_id: cloudinary_public_id,
+                        descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                    };
+                    current.push(newProduct);
+                    await saveProductsToGitHub(current, 'Agregado producto: ' + nombre);
+                    showToast('Producto "' + nombre + '" publicado!', 'success');
+                }
 
                 products = current;
                 updateCounts();
-                showToast('Producto "' + nombre + '" publicado!', 'success');
                 resetForm('otro');
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
                 setLoading('otro', false);
             }
+        }
+
+        // ============================================================
+        // EDITAR PRODUCTO
+        // ============================================================
+        function editProduct(productId) {
+            const product = products.find(function(p) { return p.id === productId; });
+            if (!product) {
+                showToast('Producto no encontrado', 'error');
+                return;
+            }
+
+            editingProductId = productId;
+
+            // Determinar que tipo es y cargar en el formulario correspondiente
+            if (product.tipo === 'heroe') {
+                switchTab('heroes', document.querySelectorAll('.tab-btn')[0]);
+                document.getElementById('hero-nombre').value = product.nombre || '';
+                document.getElementById('hero-heroe').value = product.heroe || '';
+                document.getElementById('hero-rareza').value = product.rareza || '';
+                document.getElementById('hero-precio').value = product.precio || '';
+                document.getElementById('hero-descripcion').value = product.descripcion || '';
+                // Mostrar preview de imagen existente
+                if (product.imagen_url) {
+                    const preview = document.getElementById('hero-preview');
+                    preview.src = product.imagen_url;
+                    preview.classList.add('visible');
+                }
+                document.getElementById('hero-btn-text').innerText = 'Guardar Cambios';
+                document.getElementById('hero-cancel-btn').style.display = 'inline-flex';
+                showToast('Editando skin: ' + product.nombre, 'info');
+
+            } else if (product.tipo === 'cuenta') {
+                switchTab('cuentas', document.querySelectorAll('.tab-btn')[1]);
+                document.getElementById('cuenta-mmr').value = product.mmr || '';
+                document.getElementById('cuenta-rango').value = product.rango || '';
+                document.getElementById('cuenta-comportamiento').value = product.comportamiento || '';
+                document.getElementById('cuenta-steam-level').value = product.steam_level || '';
+                document.getElementById('cuenta-correo').value = product.correo_original ? 'true' : 'false';
+                document.getElementById('cuenta-precio').value = product.precio || '';
+                document.getElementById('cuenta-descripcion').value = product.descripcion || '';
+                if (product.imagen_url) {
+                    const preview = document.getElementById('cuenta-preview');
+                    preview.src = product.imagen_url;
+                    preview.classList.add('visible');
+                }
+                document.getElementById('cuenta-btn-text').innerText = 'Guardar Cambios';
+                document.getElementById('cuenta-cancel-btn').style.display = 'inline-flex';
+                showToast('Editando cuenta: ' + product.rango + ' ' + product.mmr + ' MMR', 'info');
+
+            } else if (product.tipo === 'mensajero') {
+                switchTab('mensajeros', document.querySelectorAll('.tab-btn')[2]);
+                document.getElementById('mensajero-nombre').value = product.nombre || '';
+                document.getElementById('mensajero-calidad').value = product.calidad || '';
+                document.getElementById('mensajero-precio').value = product.precio || '';
+                document.getElementById('mensajero-descripcion').value = product.descripcion || '';
+                if (product.imagen_url) {
+                    const preview = document.getElementById('mensajero-preview');
+                    preview.src = product.imagen_url;
+                    preview.classList.add('visible');
+                }
+                document.getElementById('mensajero-btn-text').innerText = 'Guardar Cambios';
+                document.getElementById('mensajero-cancel-btn').style.display = 'inline-flex';
+                showToast('Editando mensajero: ' + product.nombre, 'info');
+
+            } else if (product.tipo === 'otro') {
+                switchTab('otros', document.querySelectorAll('.tab-btn')[3]);
+                document.getElementById('otro-nombre').value = product.nombre || '';
+                document.getElementById('otro-categoria').value = product.categoria || '';
+                document.getElementById('otro-precio').value = product.precio || '';
+                document.getElementById('otro-descripcion').value = product.descripcion || '';
+                if (product.imagen_url) {
+                    const preview = document.getElementById('otro-preview');
+                    preview.src = product.imagen_url;
+                    preview.classList.add('visible');
+                }
+                document.getElementById('otro-btn-text').innerText = 'Guardar Cambios';
+                document.getElementById('otro-cancel-btn').style.display = 'inline-flex';
+                showToast('Editando producto: ' + product.nombre, 'info');
+            }
+
+            // Scroll al formulario
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            editingProductId = null;
+            resetForm('hero');
+            resetForm('cuenta');
+            resetForm('mensajero');
+            resetForm('otro');
+            document.getElementById('hero-btn-text').innerText = 'Publicar Skin';
+            document.getElementById('cuenta-btn-text').innerText = 'Publicar Cuenta';
+            document.getElementById('mensajero-btn-text').innerText = 'Publicar Mensajero';
+            document.getElementById('otro-btn-text').innerText = 'Publicar Producto';
+            document.getElementById('hero-cancel-btn').style.display = 'none';
+            document.getElementById('cuenta-cancel-btn').style.display = 'none';
+            document.getElementById('mensajero-cancel-btn').style.display = 'none';
+            document.getElementById('otro-cancel-btn').style.display = 'none';
+            showToast('Edicion cancelada', 'warning');
         }
 
         // ============================================================
