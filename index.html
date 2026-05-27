@@ -552,8 +552,13 @@
         // ============================================================
         // CONFIGURACION - GITHUB RAW (lee productos.json directo, sin VPN)
         // ============================================================
-        // URL raw de tu repo: cambia 'main' por tu branch si es diferente
-        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/DarkWorld03/milenium-store/main/productos.json';
+        // Intenta varias rutas posibles del productos.json
+        const GITHUB_RAW_URLS = [
+            'https://raw.githubusercontent.com/DarkWorld03/milenium-store/main/productos.json',
+            'https://raw.githubusercontent.com/DarkWorld03/milenium-store/master/productos.json',
+            'https://raw.githubusercontent.com/DarkWorld03/milenium-store/main/data.json',
+            'https://raw.githubusercontent.com/DarkWorld03/milenium-store/master/data.json'
+        ];
 
         // ============================================================
         // DATOS
@@ -591,37 +596,50 @@
         ];
 
         // ============================================================
-        // CARGAR DATOS DESDE GITHUB RAW (sin cache, sin VPN)
+        // CARGAR DATOS DESDE GITHUB RAW (con fallback y debug)
         // ============================================================
         async function loadCatalogData() {
-            try {
-                // Añadimos ?nocache=Date.now() para evitar cache del navegador
-                const response = await fetch(GITHUB_RAW_URL + '?nocache=' + Date.now());
+            let lastError = null;
 
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+            for (let i = 0; i < GITHUB_RAW_URLS.length; i++) {
+                const url = GITHUB_RAW_URLS[i] + '?nocache=' + Date.now();
+                console.log('Intentando cargar desde:', url);
+
+                try {
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        console.warn('Fallo URL ' + (i+1) + ': HTTP ' + response.status);
+                        lastError = 'HTTP ' + response.status;
+                        continue; // Intenta siguiente URL
+                    }
+
+                    const data = await response.json();
+                    console.log('✅ Datos cargados desde URL ' + (i+1) + ':', url);
+
+                    if (Array.isArray(data)) {
+                        catalogData = {
+                            heroes: data.filter(function(p) { return p.tipo === 'heroe'; }),
+                            cuentas: data.filter(function(p) { return p.tipo === 'cuenta'; }),
+                            mensajeros: data.filter(function(p) { return p.tipo === 'mensajero'; }),
+                            otros: data.filter(function(p) { return p.tipo === 'otro'; })
+                        };
+                    } else {
+                        catalogData = data;
+                    }
+
+                    renderAll();
+                    return; // Exito, salir de la funcion
+
+                } catch (err) {
+                    console.warn('Error con URL ' + (i+1) + ':', err.message);
+                    lastError = err.message;
                 }
-
-                const data = await response.json();
-
-                if (Array.isArray(data)) {
-                    catalogData = {
-                        heroes: data.filter(function(p) { return p.tipo === 'heroe'; }),
-                        cuentas: data.filter(function(p) { return p.tipo === 'cuenta'; }),
-                        mensajeros: data.filter(function(p) { return p.tipo === 'mensajero'; }),
-                        otros: data.filter(function(p) { return p.tipo === 'otro'; })
-                    };
-                } else {
-                    catalogData = data;
-                }
-
-                console.log('Datos cargados desde GitHub Raw:', catalogData);
-                renderAll();
-
-            } catch (error) {
-                console.error('Error cargando catalogo:', error);
-                showEmptyState('Error al cargar el catalogo. Verifica tu conexion.');
             }
+
+            // Si llegamos aqui, ninguna URL funciono
+            console.error('Todas las URLs fallaron. Ultimo error:', lastError);
+            showEmptyState('Error 404: No se encontro productos.json en GitHub. Verifica que el archivo exista en tu repo.');
         }
 
         function showEmptyState(message) {
