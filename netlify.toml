@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 [build]
   # Esto le dice a Netlify que el comando de construcción no hace nada
+=======
+[build]
+  # Esto le dice a Netlify que el comando de construcción no hace nada
+>>>>>>> 38360a6f61edbe9c3efdcfd435c98884783e9adf
   command = "exit 0"
