@@ -1,0 +1,12 @@
+# Ignorar archivo de configuracion con credenciales sensibles
+config.js
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar logs
+*.log
+
+# Ignorar dependencias locales
+node_modules/
