@@ -24,5 +24,19 @@
     "cloudinary_public_id": "milenium_store/e6f56bqdfn70cvinwpwh",
     "descripcion": "",
     "fecha": "2026-05-27"
+  },
+  {
+    "id": "cuenta_1779898186039",
+    "tipo": "cuenta",
+    "mmr": 6000,
+    "rango": "Inmortal",
+    "comportamiento": 12000,
+    "steam_level": 1,
+    "correo_original": true,
+    "precio": "100.00",
+    "imagen_url": "https://res.cloudinary.com/dtjb4m3ij/image/upload/v1779898185/milenium_store/plmpbmklaj0lfbdaqjy5.png",
+    "cloudinary_public_id": "milenium_store/plmpbmklaj0lfbdaqjy5",
+    "descripcion": "",
+    "fecha": "2026-05-27"
   }
 ]
