@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MILENIUM STORE - Panel de Administracion</title>
+    <style>
+        :root {
+            --bg-main: #0a0909;
+            --bg-card: #161413;
+            --bg-input: #1c1917;
+            --primary: #ff4500;
+            --primary-glow: rgba(255, 69, 0, 0.4);
+            --secondary: #e5a823;
+            --secondary-glow: rgba(229, 168, 35, 0.3);
+            --text-light: #f0f0f0;
+            --text-muted: #a0a0a0;
+            --border-color: #302a28;
+            --success: #28a745;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --warning: #ffc107;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-light); min-height: 100vh; }
+
+        .login-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, #0a0909 0%, #1a1512 100%);
+            display: flex; align-items: center; justify-content: center; z-index: 10000;
+            flex-direction: column;
+        }
+        .login-box {
+            background: linear-gradient(145deg, #1e1a19 0%, var(--bg-card) 100%);
+            border: 2px solid var(--primary); border-radius: 16px;
+            padding: 40px 32px; width: 90%; max-width: 360px;
+            box-shadow: 0 0 40px var(--primary-glow), 0 20px 60px rgba(0,0,0,0.8);
+            text-align: center;
+        }
+        .login-box h2 { color: var(--secondary); font-size: 22px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 8px; font-weight: 800; }
+        .login-box p { color: var(--text-muted); font-size: 12px; margin-bottom: 24px; letter-spacing: 1px; }
+        .login-box input {
+            width: 100%; background: var(--bg-input); border: 1px solid var(--border-color);
+            color: var(--text-light); padding: 14px 16px; border-radius: 10px;
+            font-size: 16px; margin-bottom: 16px; text-align: center; letter-spacing: 2px;
+        }
+        .login-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
+        .login-box button {
+            width: 100%; background: linear-gradient(180deg, #ca3422 0%, #8a170c 100%);
+            color: white; border: 1px solid var(--primary); padding: 14px;
+            border-radius: 10px; font-size: 14px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-box button:hover { box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
+        .login-error { color: var(--danger); font-size: 13px; margin-top: 12px; display: none; }
+
+        .app-container { display: none; }
+        .topbar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 20px;
+            background: linear-gradient(180deg, rgba(26,24,23,0.98) 0%, rgba(14,13,12,0.95) 100%);
+            border-bottom: 2px solid var(--primary); box-shadow: 0 4px 25px var(--primary-glow);
+            position: sticky; top: 0; z-index: 90;
+        }
+        .topbar h1 { font-size: 16px; color: var(--secondary); text-transform: uppercase; letter-spacing: 2px; }
+        .topbar .back-link { color: var(--text-muted); text-decoration: none; font-size: 12px; transition: color 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .topbar .back-link:hover { color: var(--primary); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        .status-bar {
+            background: linear-gradient(145deg, rgba(229,168,35,0.1) 0%, rgba(229,168,35,0.05) 100%);
+            border: 1px solid var(--secondary); border-radius: 10px;
+            padding: 12px 16px; margin-bottom: 20px; font-size: 12px;
+            color: var(--text-muted); display: flex; align-items: center; gap: 10px;
+            flex-wrap: wrap;
+        }
+        .status-bar strong { color: var(--secondary); }
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 10px 18px; border-radius: 8px;
+            cursor: pointer; font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;
+        }
+        .tab-btn:hover { border-color: var(--primary); color: var(--text-light); }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+
+        .form-card {
+            background: linear-gradient(145deg, #1e1a19 0%, var(--bg-card) 100%);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 24px; margin-bottom: 24px; box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+        }
+        .form-card h2 {
+            color: var(--secondary); font-size: 15px; text-transform: uppercase;
+            letter-spacing: 1.5px; margin-bottom: 18px; padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 640px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label {
+            font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.8px; font-weight: 600;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            background: var(--bg-input); border: 1px solid var(--border-color);
+            color: var(--text-light); padding: 12px 14px; border-radius: 8px;
+            font-size: 14px; transition: all 0.2s; width: 100%;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 8px rgba(255,69,0,0.15);
+        }
+        .form-group textarea { resize: vertical; min-height: 70px; }
+        .form-group input[type="file"] { padding: 8px; }
+        .form-group input[type="file"]::-webkit-file-upload-button {
+            background: var(--primary); color: white; border: none;
+            padding: 8px 14px; border-radius: 6px; cursor: pointer;
+            font-size: 12px; text-transform: uppercase; margin-right: 10px;
+        }
+        .full-width { grid-column: 1 / -1; }
+
+        .preview-img {
+            max-width: 100%; max-height: 180px; border-radius: 8px;
+            border: 1px solid var(--border-color); margin-top: 8px;
+            display: none; object-fit: contain; background: #0c0b0b;
+        }
+        .preview-img.visible { display: block; }
+
+        .btn-group { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+        .btn {
+            padding: 12px 24px; border-radius: 8px; font-size: 13px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; border: none; transition: all 0.2s;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: linear-gradient(180deg, #ca3422 0%, #8a170c 100%);
+            color: white; border: 1px solid var(--primary); flex: 1;
+        }
+        .btn-primary:hover { background: linear-gradient(180deg, #e33b26 0%, #a41b0e 100%); box-shadow: 0 0 15px var(--primary-glow); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .btn-secondary { background: var(--bg-input); color: var(--text-light); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { border-color: var(--secondary); color: var(--secondary); }
+        .btn-danger { background: linear-gradient(180deg, #c0392b 0%, #922b21 100%); color: white; border: 1px solid #e74c3c; }
+        .btn-danger:hover { box-shadow: 0 0 15px rgba(220, 53, 69, 0.3); }
+
+        .section-title {
+            font-size: 16px; color: var(--secondary); text-transform: uppercase;
+            margin: 0 0 16px 0; padding-left: 10px;
+            border-left: 4px solid var(--primary); letter-spacing: 1.5px; font-weight: 800;
+        }
+        .products-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 640px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .product-card {
+            background: linear-gradient(145deg, #1e1a19 0%, var(--bg-card) 100%);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            overflow: hidden; transition: all 0.3s; position: relative;
+        }
+        .product-card:hover { border-color: #4a3f3a; transform: translateY(-3px); }
+        .product-img {
+            width: 100%; height: 150px; object-fit: contain;
+            background: linear-gradient(180deg, #0c0b0b 0%, #151312 100%);
+            border-bottom: 1px solid var(--border-color); padding: 8px;
+        }
+        .product-info { padding: 14px; }
+        .product-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+        .product-meta { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
+        .product-price { font-size: 16px; color: var(--secondary); font-weight: 900; margin-bottom: 10px; }
+        .product-actions { display: flex; gap: 6px; }
+        .product-actions .btn { padding: 8px 14px; font-size: 11px; flex: 1; }
+
+        .rareza-badge {
+            position: absolute; top: 8px; right: 8px;
+            padding: 3px 8px; border-radius: 20px;
+            font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .rareza-comun { background: #b0c3d9; color: #1a1a1a; }
+        .rareza-poco-comun { background: #5e98d9; color: #fff; }
+        .rareza-raro { background: #4b69ff; color: #fff; }
+        .rareza-mitico { background: #8847ff; color: #fff; }
+        .rareza-legendario { background: #d32ce6; color: #fff; }
+        .rareza-ancestral { background: #eb4b4b; color: #fff; }
+        .rareza-inmortal { background: #e4ae33; color: #1a1a1a; }
+        .rareza-arcano { background: #ade55c; color: #1a1a1a; }
+
+        .spinner {
+            width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.8s linear infinite; display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--success); color: white;
+            padding: 14px 22px; border-radius: 8px;
+            font-size: 14px; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transform: translateY(120px); opacity: 0;
+            transition: all 0.3s ease; z-index: 9999; max-width: 90%;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.error { background: var(--danger); }
+        .toast.warning { background: var(--warning); color: #1a1a1a; }
+        .toast.info { background: var(--info); }
+
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; }
+        .sync-info {
+            background: rgba(23, 162, 184, 0.1); border: 1px solid var(--info);
+            border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
+            font-size: 12px; color: var(--text-muted); line-height: 1.6;
+        }
+        .sync-info code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-family: monospace; font-size: 11px; }
+        .progress-container { width: 100%; height: 4px; background: var(--bg-input); border-radius: 2px; margin-top: 8px; display: none; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 2px; width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <h2>MILENIUM STORE</h2>
+            <p>Panel de Administracion</p>
+            <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="off">
+            <button onclick="doLogin()">Acceder</button>
+            <div class="login-error" id="loginError">Contraseña incorrecta</div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div class="app-container" id="appContainer">
+        <div class="topbar">
+            <h1>Panel de Administracion</h1>
+            <a href="index.html" class="back-link">&larr; Volver al Catalogo</a>
+        </div>
+        <div class="container">
+            <div class="status-bar">
+                <div class="status-indicator"></div>
+                <div>
+                    <strong>Cloudinary:</strong> <span id="cloudStatus">Conectado</span> |
+                    <strong>GitHub:</strong> <span id="githubStatus">Conectado</span> |
+                    <strong>Productos:</strong> <span id="totalProducts">0</span>
+                </div>
+            </div>
+
+            <div class="sync-info">
+                <strong>Sincronizacion automatica:</strong> Los datos se guardan en <code>productos.json</code> en tu repo de GitHub. 
+                Las imagenes se suben a Cloudinary y se sirven via CDN.
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('heroes', this)">Skins Heroes</button>
+                <button class="tab-btn" onclick="switchTab('cuentas', this)">Cuentas Steam</button>
+                <button class="tab-btn" onclick="switchTab('mensajeros', this)">Mensajeros</button>
+                <button class="tab-btn" onclick="switchTab('otros', this)">Otros</button>
+                <button class="tab-btn" onclick="switchTab('listado', this)">Ver Todo</button>
+            </div>
+
+            <!-- FORM HEROES -->
+            <div id="tab-heroes" class="tab-content">
+                <div class="form-card">
+                    <h2>Agregar Skin de Heroe</h2>
+                    <form id="heroForm" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del Item *</label>
+                                <input type="text" id="hero-nombre" placeholder="Ej: Age of Attrition">
+                            </div>
+                            <div class="form-group">
+                                <label>Heroe *</label>
+                                <select id="hero-heroe">
+                                    <option value="">Selecciona un heroe...</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Rareza *</label>
+                                <select id="hero-rareza">
+                                    <option value="">Selecciona...</option>
+                                    <option value="Comun">Comun</option>
+                                    <option value="Poco Comun">Poco Comun</option>
+                                    <option value="Raro">Raro</option>
+                                    <option value="Mitico">Mitico</option>
+                                    <option value="Legendario">Legendario</option>
+                                    <option value="Ancestral">Ancestral</option>
+                                    <option value="Inmortal">Inmortal</option>
+                                    <option value="Arcano">Arcano</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Precio (USD) *</label>
+                                <input type="number" id="hero-precio" placeholder="14.00" step="0.01" min="0">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Imagen del Producto *</label>
+                                <input type="file" id="hero-imagen" accept="image/*" onchange="previewImage(this, 'hero-preview')">
+                                <div class="progress-container" id="hero-upload-progress"><div class="progress-bar" id="hero-progress-bar"></div></div>
+                                <img id="hero-preview" class="preview-img" alt="Vista previa">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Descripcion (Opcional)</label>
+                                <textarea id="hero-descripcion" placeholder="Efectos especiales, notas, etc..."></textarea>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="hero-btn" onclick="publishHero()">
+                                <span id="hero-btn-text">Publicar Skin</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm('hero')">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FORM CUENTAS -->
+            <div id="tab-cuentas" class="tab-content" style="display:none;">
+                <div class="form-card">
+                    <h2>Agregar Cuenta Steam</h2>
+                    <form id="cuentaForm" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>MMR *</label>
+                                <input type="number" id="cuenta-mmr" placeholder="Ej: 3800" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Rango *</label>
+                                <select id="cuenta-rango">
+                                    <option value="">Selecciona...</option>
+                                    <option value="Heraldo">Heraldo</option>
+                                    <option value="Guardian">Guardian</option>
+                                    <option value="Cruzado">Cruzado</option>
+                                    <option value="Arconte">Arconte</option>
+                                    <option value="Legendario">Legendario</option>
+                                    <option value="Antiguo">Antiguo</option>
+                                    <option value="Divino">Divino</option>
+                                    <option value="Inmortal">Inmortal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Comportamiento</label>
+                                <input type="number" id="cuenta-comportamiento" placeholder="10000" min="0" max="10000">
+                            </div>
+                            <div class="form-group">
+                                <label>Nivel Steam</label>
+                                <input type="number" id="cuenta-steam-level" placeholder="15" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Correo Original</label>
+                                <select id="cuenta-correo">
+                                    <option value="true">Si</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Precio (USD) *</label>
+                                <input type="number" id="cuenta-precio" placeholder="35.00" step="0.01" min="0">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Imagen de la Cuenta *</label>
+                                <input type="file" id="cuenta-imagen" accept="image/*" onchange="previewImage(this, 'cuenta-preview')">
+                                <div class="progress-container" id="cuenta-upload-progress"><div class="progress-bar" id="cuenta-progress-bar"></div></div>
+                                <img id="cuenta-preview" class="preview-img" alt="Vista previa">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Descripcion (Opcional)</label>
+                                <textarea id="cuenta-descripcion" placeholder="Notas adicionales sobre la cuenta..."></textarea>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="cuenta-btn" onclick="publishCuenta()">
+                                <span id="cuenta-btn-text">Publicar Cuenta</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm('cuenta')">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FORM MENSAJEROS -->
+            <div id="tab-mensajeros" class="tab-content" style="display:none;">
+                <div class="form-card">
+                    <h2>Agregar Mensajero</h2>
+                    <form id="mensajeroForm" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del Mensajero *</label>
+                                <input type="text" id="mensajero-nombre" placeholder="Ej: Golden Baby Roshan">
+                            </div>
+                            <div class="form-group">
+                                <label>Calidad *</label>
+                                <select id="mensajero-calidad">
+                                    <option value="">Selecciona...</option>
+                                    <option value="Comun">Comun</option>
+                                    <option value="Poco Comun">Poco Comun</option>
+                                    <option value="Raro">Raro</option>
+                                    <option value="Mitico">Mitico</option>
+                                    <option value="Legendario">Legendario</option>
+                                    <option value="Ancestral">Ancestral</option>
+                                    <option value="Inmortal">Inmortal</option>
+                                    <option value="Arcano">Arcano</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Precio (USD) *</label>
+                                <input type="number" id="mensajero-precio" placeholder="50.00" step="0.01" min="0">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Imagen del Mensajero *</label>
+                                <input type="file" id="mensajero-imagen" accept="image/*" onchange="previewImage(this, 'mensajero-preview')">
+                                <div class="progress-container" id="mensajero-upload-progress"><div class="progress-bar" id="mensajero-progress-bar"></div></div>
+                                <img id="mensajero-preview" class="preview-img" alt="Vista previa">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Descripcion (Opcional)</label>
+                                <textarea id="mensajero-descripcion" placeholder="Detalles del mensajero..."></textarea>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="mensajero-btn" onclick="publishMensajero()">
+                                <span id="mensajero-btn-text">Publicar Mensajero</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm('mensajero')">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FORM OTROS -->
+            <div id="tab-otros" class="tab-content" style="display:none;">
+                <div class="form-card">
+                    <h2>Agregar Otro Producto</h2>
+                    <form id="otroForm" onsubmit="return false;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del Producto *</label>
+                                <input type="text" id="otro-nombre" placeholder="Ej: Gema Prismatic">
+                            </div>
+                            <div class="form-group">
+                                <label>Categoria *</label>
+                                <select id="otro-categoria">
+                                    <option value="">Selecciona...</option>
+                                    <option value="Gemas / Prismatic">Gemas / Prismatic</option>
+                                    <option value="Tesoros / Chests">Tesoros / Chests</option>
+                                    <option value="Battle Pass / Niveles">Battle Pass / Niveles</option>
+                                    <option value="Sets Completos">Sets Completos</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Precio (USD) *</label>
+                                <input type="number" id="otro-precio" placeholder="5.00" step="0.01" min="0">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Imagen del Producto *</label>
+                                <input type="file" id="otro-imagen" accept="image/*" onchange="previewImage(this, 'otro-preview')">
+                                <div class="progress-container" id="otro-upload-progress"><div class="progress-bar" id="otro-progress-bar"></div></div>
+                                <img id="otro-preview" class="preview-img" alt="Vista previa">
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Descripcion (Opcional)</label>
+                                <textarea id="otro-descripcion" placeholder="Detalles del producto..."></textarea>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" id="otro-btn" onclick="publishOtro()">
+                                <span id="otro-btn-text">Publicar Producto</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm('otro')">Limpiar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- LISTADO GENERAL -->
+            <div id="tab-listado" class="tab-content" style="display:none;">
+                <div class="section-title">Skins de Heroes (<span id="count-heroes">0</span>)</div>
+                <div class="products-grid" id="list-heroes"></div>
+
+                <div class="section-title">Cuentas Steam (<span id="count-cuentas">0</span>)</div>
+                <div class="products-grid" id="list-cuentas"></div>
+
+                <div class="section-title">Mensajeros (<span id="count-mensajeros">0</span>)</div>
+                <div class="products-grid" id="list-mensajeros"></div>
+
+                <div class="section-title">Otros Productos (<span id="count-otros">0</span>)</div>
+                <div class="products-grid" id="list-otros"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ============================================================
+        // CONFIGURACION - NETLIFY + CLOUDINARY (DATOS REALES)
+        // ============================================================
+        const NETLIFY_FUNCTION = '/.netlify/functions/github-api';
+        const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dtjb4m3ij/image/upload';
+        const CLOUDINARY_UPLOAD_PRESET = 'milenium_preset';
+
+        // ============================================================
+        // HEROES DOTA 2
+        // ============================================================
+        const dotaHeroes = [
+            "Abaddon", "Alchemist", "Ancient Apparition", "Anti-Mage", "Arc Warden",
+            "Axe", "Bane", "Batrider", "Beastmaster", "Bloodseeker",
+            "Bounty Hunter", "Brewmaster", "Bristleback", "Broodmother", "Centaur Warrunner",
+            "Chaos Knight", "Chen", "Clinkz", "Clockwerk", "Crystal Maiden",
+            "Dark Seer", "Dark Willow", "Dawnbreaker", "Dazzle", "Death Prophet",
+            "Disruptor", "Doom", "Dragon Knight", "Drow Ranger", "Earth Spirit",
+            "Earthshaker", "Elder Titan", "Ember Spirit", "Enchantress", "Enigma",
+            "Faceless Void", "Grimstroke", "Gyrocopter", "Hoodwink", "Huskar",
+            "Invoker", "Io", "Jakiro", "Juggernaut", "Keeper of the Light",
+            "Kez", "Kunkka", "Legion Commander", "Leshrac",
+            "Lich", "Lifestealer", "Lina", "Lion", "Lone Druid",
+            "Luna", "Lycan", "Magnus", "Marci", "Mars",
+            "Medusa", "Meepo", "Mirana", "Monkey King", "Morphling",
+            "Muerta", "Naga Siren", "Nature's Prophet", "Necrophos", "Night Stalker",
+            "Nyx Assassin", "Ogre Magi", "Omniknight", "Oracle", "Outworld Destroyer",
+            "Pangolier", "Phantom Assassin", "Phantom Lancer", "Phoenix", "Primal Beast",
+            "Puck", "Pudge", "Pugna", "Queen of Pain", "Razor",
+            "Riki", "Ringmaster", "Rubick", "Sand King", "Shadow Demon",
+            "Shadow Fiend", "Shadow Shaman", "Silencer", "Skywrath Mage", "Slardar",
+            "Slark", "Snapfire", "Sniper", "Spectre", "Spirit Breaker",
+            "Storm Spirit", "Sven", "Techies", "Templar Assassin", "Terrorblade",
+            "Tidehunter", "Timbersaw", "Tinker", "Tiny", "Treant Protector",
+            "Troll Warlord", "Tusk", "Underlord", "Undying", "Ursa",
+            "Vengeful Spirit", "Venomancer", "Viper", "Visage", "Void Spirit",
+            "Warlock", "Weaver", "Windranger", "Winter Wyvern", "Wraith King",
+            "Zeus"
+        ];
+
+        let products = [];
+        let githubSha = null;
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+        function doLogin() {
+            const password = document.getElementById('loginPassword').value;
+            if (password === 'milenium123') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                initApp();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        }
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') doLogin();
+        });
+
+        // ============================================================
+        // INICIALIZACION
+        // ============================================================
+        function initApp() {
+            const heroSelect = document.getElementById('hero-heroe');
+            dotaHeroes.sort().forEach(hero => {
+                const opt = document.createElement('option');
+                opt.value = hero.toLowerCase();
+                opt.textContent = hero;
+                heroSelect.appendChild(opt);
+            });
+            syncFromGitHub();
+        }
+
+        // ============================================================
+        // UTILIDADES
+        // ============================================================
+        function showToast(message, type) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.className = 'toast show' + (type ? ' ' + type : '');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        function setLoading(prefix, isLoading) {
+            const btn = document.getElementById(prefix + '-btn');
+            const btnText = document.getElementById(prefix + '-btn-text');
+            btn.disabled = isLoading;
+            if (isLoading) {
+                btnText.innerHTML = '<span class="spinner"></span> Procesando...';
+            } else {
+                btnText.innerText = 'Publicar ' + (prefix === 'hero' ? 'Skin' : prefix === 'cuenta' ? 'Cuenta' : prefix === 'mensajero' ? 'Mensajero' : 'Producto');
+            }
+        }
+
+        function updateProgress(prefix, percent) {
+            const bar = document.getElementById(prefix + '-progress-bar');
+            const container = document.getElementById(prefix + '-upload-progress');
+            container.style.display = 'block';
+            bar.style.width = percent + '%';
+            if (percent >= 100) {
+                setTimeout(() => { container.style.display = 'none'; bar.style.width = '0%'; }, 500);
+            }
+        }
+
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.add('visible');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function resetForm(prefix) {
+            document.getElementById(prefix + 'Form').reset();
+            document.getElementById(prefix + '-preview').classList.remove('visible');
+            document.getElementById(prefix + '-preview').src = '';
+        }
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            document.getElementById('tab-' + tab).style.display = 'block';
+            if (tab === 'listado') renderListado();
+        }
+
+        function getRarezaClass(rareza) {
+            const map = {
+                'Comun': 'rareza-comun', 'Poco Comun': 'rareza-poco-comun', 'Raro': 'rareza-raro',
+                'Mitico': 'rareza-mitico', 'Legendario': 'rareza-legendario',
+                'Ancestral': 'rareza-ancestral', 'Inmortal': 'rareza-inmortal', 'Arcano': 'rareza-arcano'
+            };
+            return map[rareza] || 'rareza-comun';
+        }
+
+        // ============================================================
+        // CLOUDINARY UPLOAD
+        // ============================================================
+        async function uploadToCloudinary(file, prefix) {
+            updateProgress(prefix, 10);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            formData.append('folder', 'milenium_store');
+            updateProgress(prefix, 30);
+
+            try {
+                const response = await fetch(CLOUDINARY_UPLOAD_URL, { method: 'POST', body: formData });
+                updateProgress(prefix, 70);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || response.statusText);
+                }
+                const data = await response.json();
+                updateProgress(prefix, 100);
+                return { secure_url: data.secure_url, public_id: data.public_id };
+            } catch (error) {
+                updateProgress(prefix, 0);
+                throw new Error('Error subiendo a Cloudinary: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // NETLIFY FUNCTION (reemplaza GitHub API directa)
+        // ============================================================
+        async function fetchProductsFromGitHub() {
+            try {
+                const response = await fetch(NETLIFY_FUNCTION, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'get' })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Error en la funcion de Netlify');
+                }
+                
+                const data = await response.json();
+                githubSha = data.sha;
+                return data.content || [];
+            } catch (error) {
+                throw new Error('Error leyendo datos: ' + error.message);
+            }
+        }
+
+        async function saveProductsToGitHub(productsArray, commitMessage) {
+            try {
+                const response = await fetch(NETLIFY_FUNCTION, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'save', 
+                        data: productsArray,
+                        sha: githubSha
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Error guardando datos');
+                }
+                
+                const data = await response.json();
+                if (data.sha) githubSha = data.sha;
+                return true;
+            } catch (error) {
+                throw new Error('Error guardando datos: ' + error.message);
+            }
+        }
+
+        // ============================================================
+        // PUBLICAR HEROE
+        // ============================================================
+        async function publishHero() {
+            const nombre = document.getElementById('hero-nombre').value.trim();
+            const heroe = document.getElementById('hero-heroe').value;
+            const rareza = document.getElementById('hero-rareza').value;
+            const precio = parseFloat(document.getElementById('hero-precio').value);
+            const descripcion = document.getElementById('hero-descripcion').value.trim();
+            const imagenFile = document.getElementById('hero-imagen').files[0];
+
+            if (!nombre || !heroe || !rareza || !precio || !imagenFile) {
+                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+
+            setLoading('hero', true);
+            try {
+                showToast('Subiendo imagen...', 'info');
+                const cloudData = await uploadToCloudinary(imagenFile, 'hero');
+                showToast('Imagen subida!', 'success');
+
+                const current = await fetchProductsFromGitHub();
+                const newProduct = {
+                    id: 'hero_' + Date.now(), tipo: 'heroe', nombre: nombre, heroe: heroe,
+                    rareza: rareza, precio: precio.toFixed(2),
+                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
+                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                };
+                current.push(newProduct);
+                await saveProductsToGitHub(current, 'Agregado skin: ' + nombre + ' (' + heroe + ')');
+
+                products = current;
+                updateCounts();
+                showToast('Skin "' + nombre + '" publicada!', 'success');
+                resetForm('hero');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                setLoading('hero', false);
+            }
+        }
+
+        // ============================================================
+        // PUBLICAR CUENTA
+        // ============================================================
+        async function publishCuenta() {
+            const mmr = parseInt(document.getElementById('cuenta-mmr').value);
+            const rango = document.getElementById('cuenta-rango').value;
+            const comportamiento = parseInt(document.getElementById('cuenta-comportamiento').value) || 10000;
+            const steamLevel = parseInt(document.getElementById('cuenta-steam-level').value) || 0;
+            const correo = document.getElementById('cuenta-correo').value === 'true';
+            const precio = parseFloat(document.getElementById('cuenta-precio').value);
+            const descripcion = document.getElementById('cuenta-descripcion').value.trim();
+            const imagenFile = document.getElementById('cuenta-imagen').files[0];
+
+            if (!mmr || !rango || !precio || !imagenFile) {
+                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+
+            setLoading('cuenta', true);
+            try {
+                showToast('Subiendo imagen...', 'info');
+                const cloudData = await uploadToCloudinary(imagenFile, 'cuenta');
+                showToast('Imagen subida!', 'success');
+
+                const current = await fetchProductsFromGitHub();
+                const newProduct = {
+                    id: 'cuenta_' + Date.now(), tipo: 'cuenta', mmr: mmr, rango: rango,
+                    comportamiento: comportamiento, steam_level: steamLevel,
+                    correo_original: correo, precio: precio.toFixed(2),
+                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
+                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                };
+                current.push(newProduct);
+                await saveProductsToGitHub(current, 'Agregada cuenta: ' + rango + ' ' + mmr + ' MMR');
+
+                products = current;
+                updateCounts();
+                showToast('Cuenta ' + rango + ' publicada!', 'success');
+                resetForm('cuenta');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                setLoading('cuenta', false);
+            }
+        }
+
+        // ============================================================
+        // PUBLICAR MENSAJERO
+        // ============================================================
+        async function publishMensajero() {
+            const nombre = document.getElementById('mensajero-nombre').value.trim();
+            const calidad = document.getElementById('mensajero-calidad').value;
+            const precio = parseFloat(document.getElementById('mensajero-precio').value);
+            const descripcion = document.getElementById('mensajero-descripcion').value.trim();
+            const imagenFile = document.getElementById('mensajero-imagen').files[0];
+
+            if (!nombre || !calidad || !precio || !imagenFile) {
+                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+
+            setLoading('mensajero', true);
+            try {
+                showToast('Subiendo imagen...', 'info');
+                const cloudData = await uploadToCloudinary(imagenFile, 'mensajero');
+                showToast('Imagen subida!', 'success');
+
+                const current = await fetchProductsFromGitHub();
+                const newProduct = {
+                    id: 'mensajero_' + Date.now(), tipo: 'mensajero', nombre: nombre,
+                    calidad: calidad, precio: precio.toFixed(2),
+                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
+                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                };
+                current.push(newProduct);
+                await saveProductsToGitHub(current, 'Agregado mensajero: ' + nombre);
+
+                products = current;
+                updateCounts();
+                showToast('Mensajero "' + nombre + '" publicado!', 'success');
+                resetForm('mensajero');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                setLoading('mensajero', false);
+            }
+        }
+
+        // ============================================================
+        // PUBLICAR OTRO
+        // ============================================================
+        async function publishOtro() {
+            const nombre = document.getElementById('otro-nombre').value.trim();
+            const categoria = document.getElementById('otro-categoria').value;
+            const precio = parseFloat(document.getElementById('otro-precio').value);
+            const descripcion = document.getElementById('otro-descripcion').value.trim();
+            const imagenFile = document.getElementById('otro-imagen').files[0];
+
+            if (!nombre || !categoria || !precio || !imagenFile) {
+                showToast('Completa todos los campos obligatorios (*)', 'error'); return;
+            }
+
+            setLoading('otro', true);
+            try {
+                showToast('Subiendo imagen...', 'info');
+                const cloudData = await uploadToCloudinary(imagenFile, 'otro');
+                showToast('Imagen subida!', 'success');
+
+                const current = await fetchProductsFromGitHub();
+                const newProduct = {
+                    id: 'otro_' + Date.now(), tipo: 'otro', nombre: nombre,
+                    categoria: categoria, precio: precio.toFixed(2),
+                    imagen_url: cloudData.secure_url, cloudinary_public_id: cloudData.public_id,
+                    descripcion: descripcion, fecha: new Date().toISOString().split('T')[0]
+                };
+                current.push(newProduct);
+                await saveProductsToGitHub(current, 'Agregado producto: ' + nombre);
+
+                products = current;
+                updateCounts();
+                showToast('Producto "' + nombre + '" publicado!', 'success');
+                resetForm('otro');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                setLoading('otro', false);
+            }
+        }
+
+        // ============================================================
+        // ELIMINAR PRODUCTO
+        // ============================================================
+        async function deleteProduct(productId) {
+            if (!confirm('Seguro que deseas eliminar este producto?\n\nNOTA: La imagen en Cloudinary NO se borrara automaticamente.')) {
+                return;
+            }
+
+            setLoading('hero', true);
+            try {
+                const current = await fetchProductsFromGitHub();
+                const filtered = current.filter(function(p) { return p.id !== productId; });
+                if (filtered.length === current.length) {
+                    throw new Error('Producto no encontrado');
+                }
+                await saveProductsToGitHub(filtered, 'Eliminado producto ID: ' + productId);
+                products = filtered;
+                updateCounts();
+                renderListado();
+                showToast('Producto eliminado', 'warning');
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                setLoading('hero', false);
+            }
+        }
+
+        // ============================================================
+        // SINCRONIZACION
+        // ============================================================
+        async function syncFromGitHub() {
+            try {
+                products = await fetchProductsFromGitHub();
+                updateCounts();
+                showToast(products.length + ' productos cargados', 'success');
+                renderListado();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        function updateCounts() {
+            const heroes = products.filter(function(p) { return p.tipo === 'heroe'; }).length;
+            const cuentas = products.filter(function(p) { return p.tipo === 'cuenta'; }).length;
+            const mensajeros = products.filter(function(p) { return p.tipo === 'mensajero'; }).length;
+            const otros = products.filter(function(p) { return p.tipo === 'otro'; }).length;
+            document.getElementById('totalProducts').innerText = products.length;
+            document.getElementById('count-heroes').innerText = heroes;
+            document.getElementById('count-cuentas').innerText = cuentas;
+            document.getElementById('count-mensajeros').innerText = mensajeros;
+            document.getElementById('count-otros').innerText = otros;
+        }
+
+        // ============================================================
+        // RENDER LISTADO
+        // ============================================================
+        function renderListado() {
+            renderCategoryList('heroes', products.filter(function(p) { return p.tipo === 'heroe'; }), 'list-heroes');
+            renderCategoryList('cuentas', products.filter(function(p) { return p.tipo === 'cuenta'; }), 'list-cuentas');
+            renderCategoryList('mensajeros', products.filter(function(p) { return p.tipo === 'mensajero'; }), 'list-mensajeros');
+            renderCategoryList('otros', products.filter(function(p) { return p.tipo === 'otro'; }), 'list-otros');
+        }
+
+        function renderCategoryList(tipo, items, containerId) {
+            const container = document.getElementById(containerId);
+            if (!items || items.length === 0) {
+                container.innerHTML = '<div class="empty-state">No hay productos en esta categoria.</div>';
+                return;
+            }
+            let html = '';
+            items.slice().reverse().forEach(function(p, i) {
+                const isSpecial = p.rareza === 'Arcano' || p.rareza === 'Inmortal' || p.calidad === 'Arcano' || p.calidad === 'Inmortal';
+                const displayName = p.nombre || (p.rango ? 'Cuenta ' + p.rango + ' ' + p.mmr + ' MMR' : 'Sin nombre');
+                const imgSrc = p.imagen_url || 'img/placeholder.jpg';
+
+                html += '<div class="product-card" style="animation: fadeIn 0.4s ease ' + (i * 0.05) + 's forwards; opacity:0;">';
+                if (p.rareza || p.calidad) {
+                    html += '<span class="rareza-badge ' + getRarezaClass(p.rareza || p.calidad) + '">' + (p.rareza || p.calidad) + '</span>';
+                }
+                html += '<img src="' + imgSrc + '" class="product-img" alt="' + displayName + '" onerror="this.src=\'https://via.placeholder.com/300x150/161413/e5a823?text=Sin+Imagen\'" loading="lazy">';
+                html += '<div class="product-info">';
+                html += '<div class="product-title">' + displayName + '</div>';
+                html += '<div class="product-meta">';
+                if (p.heroe) html += 'Heroe: ' + p.heroe + '<br>';
+                if (p.rango) html += 'Rango: ' + p.rango + ' | MMR: ' + p.mmr + '<br>';
+                if (p.categoria) html += 'Categoria: ' + p.categoria + '<br>';
+                html += (p.descripcion || '') + '<br>ID: ' + p.id;
+                html += '</div>';
+                html += '<div class="product-price">$' + parseFloat(p.precio || 0).toFixed(2) + ' USD</div>';
+                html += '<div class="product-actions">';
+                html += '<button class="btn btn-danger" onclick="deleteProduct(\'' + p.id + '\')">Eliminar</button>';
+                html += '</div></div></div>';
+            });
+            container.innerHTML = html;
+        }
+
+        const style = document.createElement('style');
+        style.textContent = '@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }';
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
